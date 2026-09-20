@@ -9,7 +9,8 @@
  * - Resilient error handling so user experience is never blocked
  */
 
-export const TIKTOK_PIXEL_ID = 'DAO3FI3C77U88MSNTTP0';
+export const TIKTOK_PIXEL_ID = 'DAO3FI3C77U88MSNTTP0'; // Letter O (from user prompt)
+export const TIKTOK_PIXEL_ID_ALT = 'DA03FI3C77U88MSNTTP0'; // Digit 0 alternative to prevent character confusion
 export const CURRENCY = 'EGP';
 
 export interface TikTokContentItem {
@@ -32,17 +33,99 @@ declare global {
         options?: Record<string, any>
       ) => void;
       identify: (params?: Record<string, any>) => void;
+      load: (id: string, options?: Record<string, any>) => void;
       [key: string]: any;
     };
     TiktokAnalyticsObject?: string;
+    __ultraOneFitTikTokStatus?: () => Record<string, any>;
   }
 }
 
 // In-memory cache to prevent duplicate events during React re-renders
-let lastTrackedRoute = 'home';
+let lastTrackedRoute = '';
 let lastTrackedViewContentId = '';
 const inMemoryTrackedOrders = new Set<string>();
 const PURCHASE_STORAGE_KEY = 'uof_ttq_tracked_orders_v1';
+
+/**
+ * Self-healing bootstrap to ensure TikTok Pixel snippet exists and is active
+ * even if HTML script loading encountered any network delay.
+ */
+export function ensureTikTokScriptLoaded(): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    if (!window.ttq || typeof window.ttq.track !== 'function') {
+      (function (w: any, d: Document, t: string) {
+        w.TiktokAnalyticsObject = t;
+        const ttq = (w[t] = w[t] || []);
+        ttq.methods = [
+          "page", "track", "identify", "instances", "debug", "on", "off", "once", "ready",
+          "alias", "group", "enableCookie", "disableCookie", "holdConsent", "revokeConsent", "grantConsent"
+        ];
+        ttq.setAndDefer = function (t: any, e: any) {
+          t[e] = function () {
+            t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+          };
+        };
+        for (let i = 0; i < ttq.methods.length; i++) {
+          ttq.setAndDefer(ttq, ttq.methods[i]);
+        }
+        ttq.instance = function (t: any) {
+          const e = ttq._i[t] || [];
+          for (let n = 0; n < ttq.methods.length; n++) {
+            ttq.setAndDefer(e, ttq.methods[n]);
+          }
+          return e;
+        };
+        ttq.load = function (e: any, n: any) {
+          const r = "https://analytics.tiktok.com/i18n/pixel/events.js";
+          ttq._i = ttq._i || {};
+          ttq._i[e] = [];
+          ttq._i[e]._u = r;
+          ttq._t = ttq._t || {};
+          ttq._t[e] = +new Date();
+          ttq._o = ttq._o || {};
+          ttq._o[e] = n || {};
+          const s = document.createElement("script");
+          s.type = "text/javascript";
+          s.async = true;
+          s.src = r + "?sdkid=" + e + "&lib=" + t;
+          const firstScript = document.getElementsByTagName("script")[0];
+          if (firstScript && firstScript.parentNode) {
+            firstScript.parentNode.insertBefore(s, firstScript);
+          } else if (document.head) {
+            document.head.appendChild(s);
+          }
+        };
+
+        ttq.load(TIKTOK_PIXEL_ID);
+        ttq.load(TIKTOK_PIXEL_ID_ALT);
+        ttq.page();
+      })(window, document, 'ttq');
+    }
+  } catch (err) {
+    // Fail silently in production
+  }
+}
+
+// Auto-run bootstrap on script evaluation
+if (typeof window !== 'undefined') {
+  ensureTikTokScriptLoaded();
+  
+  // Provide diagnostic tool in browser console
+  window.__ultraOneFitTikTokStatus = () => {
+    const isTtqPresent = Boolean(window.ttq && typeof window.ttq.track === 'function');
+    return {
+      pixelIdPrimary: TIKTOK_PIXEL_ID,
+      pixelIdAlt: TIKTOK_PIXEL_ID_ALT,
+      isTtqPresent,
+      hasPageMethod: Boolean(window.ttq && typeof window.ttq.page === 'function'),
+      lastTrackedRoute,
+      trackedOrdersCount: inMemoryTrackedOrders.size,
+    };
+  };
+}
 
 /**
  * Safe development debugger that logs purely non-sensitive tracking telemetry.
@@ -123,19 +206,41 @@ function markOrderAsTracked(orderId: string): void {
 }
 
 /**
- * Executes a TikTok Pixel call in a completely safe, non-blocking try-catch block.
+ * Executes a TikTok Pixel call in a completely safe, non-blocking try-catch block
+ * with retry logic if the asynchronous script was mounting.
  */
 function executeTtq(
   action: (ttq: NonNullable<Window['ttq']>) => void
 ): void {
-  try {
-    if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
-      action(window.ttq);
+  if (typeof window === 'undefined') return;
+
+  const getActiveTtq = (): Window['ttq'] | null => {
+    const objName = window.TiktokAnalyticsObject || 'ttq';
+    return (window as any)[objName] || window.ttq || null;
+  };
+
+  const ttq = getActiveTtq();
+  if (ttq && typeof ttq.track === 'function') {
+    try {
+      action(ttq);
+    } catch (err) {
+      // Fail silently in production
+      // eslint-disable-next-line no-console
+      console.warn('[TikTok Pixel] Execution notice:', err);
     }
-  } catch (err) {
-    // Fail silently in production so user operations are never blocked
-    // eslint-disable-next-line no-console
-    console.warn('[TikTok Pixel] Execution notice:', err);
+  } else {
+    // Attempt bootstrap and retry once after 200ms
+    ensureTikTokScriptLoaded();
+    setTimeout(() => {
+      const retryTtq = getActiveTtq();
+      if (retryTtq && typeof retryTtq.track === 'function') {
+        try {
+          action(retryTtq);
+        } catch {
+          // ignore
+        }
+      }
+    }, 200);
   }
 }
 
