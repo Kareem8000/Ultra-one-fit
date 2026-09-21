@@ -74,6 +74,14 @@ const AppContent: React.FC = () => {
           setSelectedOutfit(foundOutfit);
           setCurrentView('look-detail');
         }
+      } else if (hash === 'pieces-cards-section' || hash.startsWith('piece-') || (hash && document.getElementById(hash))) {
+        // Internal in-page anchor: smooth-scroll to element and retain current view
+        const targetElement = document.getElementById(hash);
+        if (targetElement) {
+          const yOffset = -90;
+          const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
       } else {
         setCurrentView('home');
       }

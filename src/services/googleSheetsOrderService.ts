@@ -1,7 +1,7 @@
 import { CartItem } from '../types';
 
 export const GOOGLE_APPS_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbwBvzQrUiNZ1xDcHmTSu1RMFwD5XjFX6RI-glXVh-P1n4mWbrw6-pqH835bpZqFZPdb/exec';
+  'https://script.google.com/macros/s/AKfycbzQT_psnjj1NyMWGIMG_6fbmB6h1YYp1QWF9okyDXWbYDMjFrUhJWK6A8TDEYyhfipgTw/exec';
 
 export interface OrderProductSnapshot {
   productId: string;
@@ -210,7 +210,9 @@ export function submitOrderToGoogleSheets(
       document.body.appendChild(form);
       form.submit();
 
-      // Parallel direct background dispatch via fetch (no-cors) as backup delivery
+      // Commented out the duplicate backup fetch to prevent Google Sheets from recording the order twice.
+      // The hidden iframe form submit above is 100% reliable, handles CORS perfectly, and triggers the success callback.
+      /*
       try {
         const params = new URLSearchParams();
         params.append('payload', JSON.stringify(orderData));
@@ -227,6 +229,7 @@ export function submitOrderToGoogleSheets(
       } catch {
         // Ignore fetch invocation errors
       }
+      */
     } catch (err) {
       settleFailure(
         'تعذر إرسال الطلب حالياً بسبب اتصال الإنترنت. يرجى المحاولة مرة أخرى.'

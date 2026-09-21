@@ -207,8 +207,22 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
     }
   };
 
-  // Filter other 2 outfits for switcher at bottom
+    // Filter other 2 outfits for switcher at bottom
   const otherOutfits = OUTFITS.filter((o) => o.id !== outfit.id);
+
+  // Smooth scroll directly to the pieces selection section without triggering route changes
+  const scrollToPieces = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const section = document.getElementById('pieces-cards-section');
+    if (section) {
+      const yOffset = -90; // offset for fixed header
+      const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FBFBFB] text-[#1C1C1C] pt-20 sm:pt-24 pb-20 selection:bg-[#1C1C1C] selection:text-[#FFFFFF]">
@@ -415,8 +429,10 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
               </div>
 
               <a
+                id="btn-scroll-to-pieces"
                 href="#pieces-cards-section"
-                className="w-full py-3.5 px-5 rounded-[12px] bg-[#1C1C1C] text-[#FFFFFF] text-center font-bold text-sm hover:bg-[#000000] transition-all flex items-center justify-center gap-2 shadow-sm active:scale-[0.99]"
+                onClick={scrollToPieces}
+                className="w-full py-3.5 px-5 rounded-[12px] bg-[#1C1C1C] text-[#FFFFFF] text-center font-bold text-sm hover:bg-[#000000] transition-all flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] cursor-pointer"
               >
                 <span>تحديد مقاسات الـ 3 قطع وإتمام الطلب ↓</span>
               </a>
