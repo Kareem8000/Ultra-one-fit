@@ -42,6 +42,8 @@ export interface CatalogProduct {
   price: number;
   warranty?: string;
   image: string;
+  gallery?: string[];
+  colorGalleries?: Record<string, string[]>;
   cardShortCopy: string;
   cardFitDetail: string;
 }
@@ -60,6 +62,12 @@ export interface CartItem {
   image: string;
   warranty?: string;
   outfitName?: string;
+  outfitId?: string;
+  bundleId?: string;
+  isLookPiece?: boolean;
+  lookPrice?: number;
+  lookSeparatePrice?: number;
+  lookSavings?: number;
 }
 
 export interface Outfit {
@@ -75,10 +83,14 @@ export interface Outfit {
   context?: string;
   descriptionText?: string;
   description?: string;
+  story?: string;
   image: string;
   galleryImages?: string[];
   pieces: ProductPiece[];
   totalPrice: number;
+  separatePrice: number;
+  savingsAmount: number;
+  recommendedLookIds?: string[];
 }
 
 export interface ModelMeasurements {
@@ -111,7 +123,7 @@ export interface OrderDetails {
   customerPhone: string;
   customerAddress: string;
   customerNotes?: string;
-  paymentMethod: 'cod' | 'vodafone_cash';
+  paymentMethod: 'cod';
   subtotal: number;
   shippingFee: number;
   total: number;

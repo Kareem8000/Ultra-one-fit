@@ -31,7 +31,8 @@ export const OutfitGuideModal: React.FC<OutfitGuideModalProps> = ({
     { label: 'سهرة ويوم طويل', vibe: 'Dark & Sharp' },
   ];
 
-  const totalPrice = selectedTshirt.price + selectedJeans.price + selectedShoes.price;
+  const separatePrice = selectedTshirt.price + selectedJeans.price + selectedShoes.price;
+  const discountedTotalPrice = separatePrice - 150;
 
   const buildCustomOutfit = (): Outfit => {
     return {
@@ -49,7 +50,9 @@ export const OutfitGuideModal: React.FC<OutfitGuideModalProps> = ({
           ? OUTFITS[0].image
           : OUTFITS[2].image,
       pieces: [selectedTshirt, selectedJeans, selectedShoes],
-      totalPrice: totalPrice,
+      separatePrice: separatePrice,
+      totalPrice: discountedTotalPrice,
+      savingsAmount: 150,
     };
   };
 
@@ -60,6 +63,7 @@ export const OutfitGuideModal: React.FC<OutfitGuideModalProps> = ({
 
   const handleAddToCart = () => {
     const customOutfit = buildCustomOutfit();
+    const bundleId = `bundle-guide-${Date.now()}`;
     [selectedTshirt, selectedJeans, selectedShoes].forEach((piece) => {
       const defaultSize = piece.category === 'tshirt' ? 'L' : piece.category === 'jeans' ? '32' : '43';
       addToCart({
@@ -74,6 +78,11 @@ export const OutfitGuideModal: React.FC<OutfitGuideModalProps> = ({
         image: customOutfit.image,
         quantity: 1,
         outfitName: customOutfit.name,
+        bundleId,
+        isLookPiece: true,
+        lookPrice: customOutfit.totalPrice,
+        lookSeparatePrice: customOutfit.separatePrice,
+        lookSavings: 150,
       });
     });
 
@@ -314,18 +323,26 @@ export const OutfitGuideModal: React.FC<OutfitGuideModalProps> = ({
 
           <div className="flex items-baseline justify-between mb-3">
             <div>
+              <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                <span className="text-[11px] text-[#777777] line-through font-mono">
+                  {separatePrice.toLocaleString('ar-EG')} ج.م
+                </span>
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                  وفّر 150 ج.م
+                </span>
+              </div>
               <span className="text-xs font-black text-[#1C1C1C] block">
-                إجمالي الـ3 قطع المنسقة
+                سعر الـLook بعد الخصم
               </span>
               <span className="text-[11px] text-[#AFAFAD]">
                 ({selectedTshirt.colorName} + {selectedJeans.colorName} + {selectedShoes.colorName})
               </span>
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl sm:text-3xl font-black text-[#1C1C1C] font-mono">
-                {totalPrice.toLocaleString('ar-EG')}
+            <div className="flex items-baseline gap-1 font-mono text-[#1C1C1C]">
+              <span className="text-2xl sm:text-3xl font-black">
+                {discountedTotalPrice.toLocaleString('ar-EG')}
               </span>
-              <span className="text-xs font-bold text-[#1C1C1C]/80">جنيه</span>
+              <span className="text-xs font-bold text-[#555555]">جنيه</span>
             </div>
           </div>
 

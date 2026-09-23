@@ -90,11 +90,11 @@ export const LegalModal: React.FC<LegalModalProps> = ({ isOpen, type, onClose })
               <div>
                 <h4 className="font-extrabold text-sm sm:text-base text-[#1C1C1C] flex items-center gap-2 mb-2">
                   <CreditCard className="w-4 h-4 text-[#1C1C1C] shrink-0" />
-                  <span>3. طرق الدفع وعربون التأكيد</span>
+                  <span>3. طريقة الدفع المعتمدة</span>
                 </h4>
                 <ul className="list-disc list-inside space-y-1.5 pr-2 text-xs sm:text-sm text-[#1C1C1C]/80">
-                  <li><strong>الدفع عند الاستلام (COD):</strong> الدفع نقداً للمندوب عند استلام الشحنة.</li>
-                  <li><strong>الدفع عبر فودافون كاش (Vodafone Cash):</strong> يتطلب سداد <strong>10% مقدماً كعربون تأكيد جدية الطلب</strong>، مع سداد باقي المبلغ ومصاريف الشحن عند الاستلام.</li>
+                  <li><strong>الدفع عند الاستلام (COD):</strong> الدفع نقداً للمندوب بعد استلام ومعاينة الشحنة والتأكد من جودة ومقاسات القطع.</li>
+                  <li>لا توجد أي رسوم إضافية خفية؛ تدفع فقط قيمة المنتجات ومصاريف الشحن الموضحة في ملخص الطلب.</li>
                 </ul>
               </div>
 

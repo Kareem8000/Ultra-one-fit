@@ -33,6 +33,7 @@ const AppContent: React.FC = () => {
 
   const [currentView, setCurrentView] = useState<'home' | 'products' | 'product-detail' | 'look-detail'>('home');
   const [selectedCatalogProduct, setSelectedCatalogProduct] = useState<CatalogProduct | null>(null);
+  const [selectedProductColor, setSelectedProductColor] = useState<string | undefined>(undefined);
   const [selectedOutfit, setSelectedOutfit] = useState<Outfit | null>(null);
 
   const [selectedOutfitForOrder, setSelectedOutfitForOrder] = useState<Outfit | null>(null);
@@ -48,47 +49,60 @@ const AppContent: React.FC = () => {
 
   // Ensure initial view is always Home (الرئيسية) on site load as requested
   useEffect(() => {
-    // If a stale hash was lingering from a previous session, reset to clean home
-    if (window.location.hash && window.location.hash !== '' && window.location.hash !== '#home') {
-      window.history.replaceState(null, '', window.location.pathname);
-    }
-    setCurrentView('home');
-
-    const handleHashChange = () => {
+    const handleHashRouting = () => {
       const hash = window.location.hash.replace('#', '');
+      if (!hash || hash === 'home') {
+        setCurrentView('home');
+        return;
+      }
       if (hash === 'products') {
         setCurrentView('products');
         setSelectedCatalogProduct(null);
         setSelectedOutfit(null);
-      } else if (hash.startsWith('prod-')) {
+        return;
+      }
+      if (hash.startsWith('prod-')) {
         const found = OFFICIAL_CATALOG_PRODUCTS.find((p) => p.id === hash);
         if (found) {
           setSelectedCatalogProduct(found);
           setCurrentView('product-detail');
           setSelectedOutfit(null);
+          return;
         }
-      } else if (hash === 'after-class' || hash === 'after-dark' || hash === 'day-out' || hash.startsWith('look-')) {
-        const cleanId = hash.replace('look-', '');
-        const foundOutfit = OUTFITS.find((o) => o.id === cleanId || o.slug === cleanId || o.id === hash);
-        if (foundOutfit) {
-          setSelectedOutfit(foundOutfit);
-          setCurrentView('look-detail');
-        }
-      } else if (hash === 'pieces-cards-section' || hash.startsWith('piece-') || (hash && document.getElementById(hash))) {
-        // Internal in-page anchor: smooth-scroll to element and retain current view
+      }
+      // Check if hash matches any of the 7 looks (by ID or slug, with or without 'look-' prefix)
+      const cleanId = hash.replace('look-', '');
+      const foundOutfit = OUTFITS.find(
+        (o) => o.id === hash || o.slug === hash || o.id === cleanId || o.slug === cleanId
+      );
+      if (foundOutfit) {
+        setSelectedOutfit(foundOutfit);
+        setCurrentView('look-detail');
+        setSelectedCatalogProduct(null);
+        return;
+      }
+      // In-page anchor scrolling
+      if (hash === 'pieces-cards-section' || hash.startsWith('piece-') || document.getElementById(hash)) {
         const targetElement = document.getElementById(hash);
         if (targetElement) {
           const yOffset = -90;
           const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({ top: y, behavior: 'smooth' });
         }
-      } else {
-        setCurrentView('home');
+        return;
       }
+      setCurrentView('home');
     };
 
-    window.addEventListener('popstate', handleHashChange);
-    return () => window.removeEventListener('popstate', handleHashChange);
+    // Initial check on load
+    handleHashRouting();
+
+    window.addEventListener('popstate', handleHashRouting);
+    window.addEventListener('hashchange', handleHashRouting);
+    return () => {
+      window.removeEventListener('popstate', handleHashRouting);
+      window.removeEventListener('hashchange', handleHashRouting);
+    };
   }, []);
 
   // TikTok Pixel: Track SPA route PageView and ViewContent accurately
@@ -150,6 +164,7 @@ const AppContent: React.FC = () => {
     setCurrentView('home');
     setSelectedOutfit(null);
     setSelectedCatalogProduct(null);
+    setSelectedProductColor(undefined);
     window.location.hash = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -163,13 +178,15 @@ const AppContent: React.FC = () => {
     trackEvent('navigation_click', { target: 'products_page' });
     setCurrentView('products');
     setSelectedCatalogProduct(null);
+    setSelectedProductColor(undefined);
     window.location.hash = 'products';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenProductDetails = (product: CatalogProduct) => {
+  const handleOpenProductDetails = (product: CatalogProduct, initialColor?: string) => {
     trackEvent('product_view', { productId: product.id, productName: product.name });
     setSelectedCatalogProduct(product);
+    setSelectedProductColor(initialColor);
     setCurrentView('product-detail');
     window.location.hash = product.id;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -178,6 +195,7 @@ const AppContent: React.FC = () => {
   const handleBackToProducts = () => {
     setCurrentView('products');
     setSelectedCatalogProduct(null);
+    setSelectedProductColor(undefined);
     window.location.hash = 'products';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -309,6 +327,7 @@ const AppContent: React.FC = () => {
         {currentView === 'product-detail' && selectedCatalogProduct && (
           <ProductDetailPage
             product={selectedCatalogProduct}
+            initialColor={selectedProductColor}
             onBackToProducts={handleBackToProducts}
             onNavigateToOutfits={handleNavigateToOutfits}
             onOpenSizeChart={handleOpenSizeChart}

@@ -98,7 +98,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   setCartDrawerOpen(false);
                   onNavigateToProducts();
                 }}
-                className="mt-2 px-4 py-2 rounded-[8px] bg-[#1C1C1C] text-[#FFFFFF] text-xs font-bold hover:bg-[#2A2A2A] transition-colors"
+                className="mt-2 px-4 py-2 rounded-[8px] bg-[#1C1C1C] text-[#FFFFFF] text-xs font-bold hover:bg-[#2A2A2A] transition-colors cursor-pointer"
               >
                 تصفح المنتجات
               </button>
@@ -121,13 +121,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                 {/* Item Details */}
                 <div className="flex-1 min-w-0 space-y-1">
+                  {/* Look Bundle Indicator if part of a look */}
+                  {item.outfitName && (
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <span className="px-1.5 py-0.5 rounded-[4px] bg-[#1C1C1C] text-[#FFFFFF] text-[9px] font-mono font-bold">
+                        LOOK
+                      </span>
+                      <span className="text-[10px] font-bold text-[#1C1C1C] truncate">
+                        {item.outfitName}
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex items-start justify-between gap-1">
                     <h4 className="font-bold text-xs text-[#1C1C1C] truncate">
                       {item.productName}
                     </h4>
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="text-[#AFAFAD] hover:text-[#1C1C1C] p-1 transition-colors"
+                      className="text-[#AFAFAD] hover:text-[#1C1C1C] p-1 transition-colors cursor-pointer"
                       title="حذف من السلة"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -147,7 +159,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <div className="flex items-center rounded-[6px] border border-[#C8C8C6] overflow-hidden bg-[#FFFFFF]">
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="px-2 py-0.5 text-xs font-bold text-[#1C1C1C] hover:bg-[#EAEAEA]"
+                        className="px-2 py-0.5 text-xs font-bold text-[#1C1C1C] hover:bg-[#EAEAEA] cursor-pointer"
                       >
                         -
                       </button>
@@ -156,7 +168,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       </span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-2 py-0.5 text-xs font-bold text-[#1C1C1C] hover:bg-[#EAEAEA]"
+                        className="px-2 py-0.5 text-xs font-bold text-[#1C1C1C] hover:bg-[#EAEAEA] cursor-pointer"
                       >
                         +
                       </button>
@@ -173,43 +185,69 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         </div>
 
         {/* Drawer Footer */}
-        {cart.length > 0 && (
-          <div className="p-4 sm:p-5 border-t border-[#C8C8C6]/60 bg-[#FFFFFF] space-y-3">
-            <div className="flex items-center justify-between text-xs text-[#AFAFAD]">
-              <span>شحن القاهرة (3-4 أيام):</span>
-              <span className="font-bold text-[#1C1C1C] font-mono">80 جنيه</span>
-            </div>
+        {cart.length > 0 && (() => {
+          const uniqueBundles = new Set(
+            cart.filter((i) => i.bundleId || i.isLookPiece).map((i) => i.bundleId || i.outfitName)
+          );
+          const bundleSavings = uniqueBundles.size * 150;
+          const originalSeparateTotal = subtotal + bundleSavings;
 
-            <div className="flex items-center justify-between pt-1 border-t border-[#C8C8C6]/40">
-              <span className="font-bold text-sm text-[#1C1C1C]">الإجمالي</span>
-              <div className="text-left">
-                <span className="text-xl font-black font-mono text-[#1C1C1C]">
-                  {subtotal}
-                </span>
-                <span className="text-xs font-bold text-[#1C1C1C] mr-1">جنيه</span>
+          return (
+            <div className="p-4 sm:p-5 border-t border-[#C8C8C6]/60 bg-[#FFFFFF] space-y-2.5">
+              {bundleSavings > 0 && (
+                <>
+                  <div className="flex items-center justify-between text-xs text-[#777777]">
+                    <span>إجمالي القطع منفصلة:</span>
+                    <span className="font-mono line-through">{originalSeparateTotal} جنيه</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs font-bold text-[#1C1C1C]">
+                    <span className="flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-[#1C1C1C] text-[#FFFFFF] text-[9px] font-mono">
+                        CLEARANCE
+                      </span>
+                      <span>خصم الـLooks:</span>
+                    </span>
+                    <span className="font-mono text-emerald-700">-{bundleSavings} جنيه</span>
+                  </div>
+                </>
+              )}
+
+              <div className="flex items-center justify-between text-xs text-[#AFAFAD]">
+                <span>شحن القاهرة (3-4 أيام):</span>
+                <span className="font-bold text-[#1C1C1C] font-mono">80 جنيه</span>
               </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-[#C8C8C6]/40">
+                <span className="font-bold text-sm text-[#1C1C1C]">الإجمالي للدفع</span>
+                <div className="text-left">
+                  <span className="text-xl font-black font-mono text-[#1C1C1C]">
+                    {subtotal + 80}
+                  </span>
+                  <span className="text-xs font-bold text-[#1C1C1C] mr-1">جنيه</span>
+                </div>
+              </div>
+
+              {/* CTA 1: إتمام الطلب */}
+              <button
+                onClick={handleCheckoutClick}
+                className="w-full h-[46px] rounded-[10px] bg-[#1C1C1C] text-[#FFFFFF] font-bold text-sm hover:bg-[#2A2A2A] transition-all flex items-center justify-center gap-2 shadow-sm hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                id="cart-drawer-checkout-btn"
+              >
+                <span>إتمام الطلب</span>
+                <ArrowLeft className="w-4 h-4 text-[#FFFFFF]" />
+              </button>
+
+              {/* CTA 2: كمّل التسوق */}
+              <button
+                onClick={handleContinueShopping}
+                className="w-full h-[40px] rounded-[10px] bg-transparent text-[#1C1C1C] font-bold text-xs hover:bg-[#1C1C1C]/5 transition-colors cursor-pointer"
+                id="cart-drawer-continue-shopping-btn"
+              >
+                كمّل التسوق
+              </button>
             </div>
-
-            {/* CTA 1: إتمام الطلب */}
-            <button
-              onClick={handleCheckoutClick}
-              className="w-full h-[46px] rounded-[10px] bg-[#1C1C1C] text-[#FFFFFF] font-bold text-sm hover:bg-[#2A2A2A] transition-all flex items-center justify-center gap-2 shadow-sm hover:-translate-y-0.5 active:translate-y-0"
-              id="cart-drawer-checkout-btn"
-            >
-              <span>إتمام الطلب</span>
-              <ArrowLeft className="w-4 h-4 text-[#FFFFFF]" />
-            </button>
-
-            {/* CTA 2: كمّل التسوق */}
-            <button
-              onClick={handleContinueShopping}
-              className="w-full h-[40px] rounded-[10px] bg-transparent text-[#1C1C1C] font-bold text-xs hover:bg-[#1C1C1C]/5 transition-colors"
-              id="cart-drawer-continue-shopping-btn"
-            >
-              كمّل التسوق
-            </button>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ export const OutfitShowcase: React.FC<OutfitShowcaseProps> = ({
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#1C1C1C]/5 border border-[#C8C8C6] text-[#1C1C1C] text-xs font-bold tracking-wide mb-5"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#1C1C1C]" />
-            <span>المجموعة المنسقة</span>
+            <span>☀ SUMMER CLEARANCE — وفّر 150 جنيه على الـLook</span>
           </div>
 
           <h2
@@ -127,14 +127,24 @@ export const OutfitShowcase: React.FC<OutfitShowcaseProps> = ({
                 {/* Price & Primary CTA */}
                 <div className="pt-4 border-t border-[#C8C8C6]/40">
                   <div className="flex items-baseline justify-between mb-4">
-                    <span className="text-xs font-bold text-[#AFAFAD]">
-                      إجمالي الـOutfit بالكامل
-                    </span>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-black text-[#1C1C1C]">
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                        <span className="text-[11px] text-[#777777] line-through font-mono">
+                          {outfit.separatePrice.toLocaleString('ar-EG')} ج.م
+                        </span>
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                          وفّر 150 ج.م
+                        </span>
+                      </div>
+                      <span className="text-xs font-bold text-[#1C1C1C] block">
+                        سعر الـLook بالكامل
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-1 font-mono text-[#1C1C1C]">
+                      <span className="text-2xl font-black">
                         {outfit.totalPrice.toLocaleString('ar-EG')}
                       </span>
-                      <span className="text-xs font-bold text-[#1C1C1C]/80">
+                      <span className="text-xs font-bold text-[#555555]">
                         جنيه
                       </span>
                     </div>
@@ -143,7 +153,7 @@ export const OutfitShowcase: React.FC<OutfitShowcaseProps> = ({
                   <button
                     onClick={() => onSelectOutfit(outfit)}
                     id={`showcase-select-btn-${outfit.id}`}
-                    className="w-full py-3.5 px-4 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] font-bold text-sm hover:bg-[#2E2E2E] transition-all duration-200 shadow-sm flex items-center justify-center gap-2 focus:outline-none hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] font-bold text-sm hover:bg-[#2E2E2E] transition-all duration-200 shadow-sm flex items-center justify-center gap-2 focus:outline-none hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <span>اختار الـOutfit دي</span>
                     <ArrowLeft className="w-4 h-4" />

@@ -6,11 +6,15 @@ export const GOOGLE_APPS_SCRIPT_URL =
 export interface OrderProductSnapshot {
   productId: string;
   productName: string;
+  category?: string;
   color: string;
   size: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
+  outfitName?: string;
+  warranty?: string;
+  colorHex?: string;
   [key: string]: any;
 }
 
@@ -20,14 +24,18 @@ export interface OrderSnapshot {
   phone: string;
   governorate: string;
   address: string;
-  paymentMethod: 'Cash on Delivery' | 'Vodafone Cash / Deposit';
+  paymentMethod: 'Cash on Delivery' | 'الدفع عند الاستلام';
   depositAmount: number;
-  deliveryTime: '3-4 Business Days' | '1-2 Business Days';
+  deliveryTime: '3-4 Business Days' | '3-4 أيام عمل';
   products: OrderProductSnapshot[];
+  itemCount: number;
+  itemsSummary: string;
   subtotal: number;
   shipping: number;
   total: number;
   notes: string;
+  orderDate?: string;
+  timestamp?: string;
   [key: string]: any;
 }
 
@@ -53,8 +61,8 @@ export function generateOrderId(): string {
 }
 
 /**
- * Normalizes existing cart item data into the exact required product snapshot structure.
- * Preserves all customer variant choices: color, size, quantity, unit price, and line total.
+ * Normalizes cart item data into an organized, professional product snapshot.
+ * Preserves all customer variant choices: category, color, size, quantity, unit price, line total, outfit association.
  */
 export function normalizeCartItemToProductSnapshot(item: CartItem): OrderProductSnapshot {
   const quantity = Number(item.quantity) || 1;
@@ -64,15 +72,15 @@ export function normalizeCartItemToProductSnapshot(item: CartItem): OrderProduct
   return {
     productId: String(item.productId || item.id),
     productName: item.productName,
+    category: item.productCategory || item.productType || 'منتج',
     color: item.selectedColor || 'Default',
     size: item.selectedSize || 'Standard',
     quantity,
     unitPrice,
     lineTotal,
-    ...(item.productType ? { productType: item.productType } : {}),
-    ...(item.selectedColorHex ? { colorHex: item.selectedColorHex } : {}),
-    ...(item.warranty ? { warranty: item.warranty } : {}),
     ...(item.outfitName ? { outfitName: item.outfitName } : {}),
+    ...(item.warranty ? { warranty: item.warranty } : {}),
+    ...(item.selectedColorHex ? { colorHex: item.selectedColorHex } : {}),
   };
 }
 
@@ -113,12 +121,39 @@ export function submitOrderToGoogleSheets(
     form.target = iframeName;
     form.setAttribute('style', 'display:none !important;');
 
-    // 3. Create hidden input 'payload'
+    // 3. Create hidden input 'payload' (full JSON) and explicit standard form fields
     const payloadInput = document.createElement('input');
     payloadInput.type = 'hidden';
     payloadInput.name = 'payload';
     payloadInput.value = JSON.stringify(orderData);
     form.appendChild(payloadInput);
+
+    // Also populate top-level fields for Apps Scripts parsing e.parameter directly
+    const directFields: Record<string, string> = {
+      orderId: orderData.orderId,
+      name: orderData.name,
+      phone: orderData.phone,
+      governorate: orderData.governorate,
+      address: orderData.address,
+      paymentMethod: orderData.paymentMethod,
+      depositAmount: String(orderData.depositAmount ?? 0),
+      deliveryTime: orderData.deliveryTime,
+      itemCount: String(orderData.itemCount ?? orderData.products.length),
+      itemsSummary: orderData.itemsSummary || '',
+      subtotal: String(orderData.subtotal),
+      shipping: String(orderData.shipping),
+      total: String(orderData.total),
+      notes: orderData.notes || '',
+      orderDate: orderData.orderDate || new Date().toLocaleString('ar-EG'),
+    };
+
+    Object.entries(directFields).forEach(([key, val]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = val;
+      form.appendChild(input);
+    });
 
     // Cleanup helper
     const cleanup = () => {

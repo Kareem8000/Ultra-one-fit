@@ -26,18 +26,18 @@ export const OfferSection: React.FC<OfferSectionProps> = ({
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#EAEAEA]/10 border border-[#C8C8C6]/30 text-[#EAEAEA] text-xs font-bold tracking-wide mb-5"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#FFFFFF]" />
-            <span>وحدة الشراء: Outfit كامل</span>
+            <span>☀ SUMMER CLEARANCE — وفّر 150 جنيه على كل Look</span>
           </div>
 
           <h2
             id="offer-headline"
             className="text-3xl sm:text-4xl md:text-5xl font-black text-[#FFFFFF] tracking-tight leading-tight mb-4"
           >
-            اختار الـLook اللي شبه يومك.
+            اختار الـLook كاملة ووفّر 150 جنيه
           </h2>
 
           <p className="text-base sm:text-lg text-[#C8C8C6] leading-relaxed max-w-[620px] mx-auto">
-            3 Outfits متنسقة من 3 قطع، عشان تختار الـLook كامل بدل ما تبدأ من كل قطعة لوحدها.
+            3 Outfits صيفية متناسقة من 3 قطع أساسية (تيشيرت + جينز + كوتشي). وفّر 150 جنيه فوراً عند طلب الـLook متكاملة.
           </p>
         </div>
 
@@ -114,16 +114,26 @@ export const OfferSection: React.FC<OfferSectionProps> = ({
               </div>
 
               {/* Bottom Total Price & High-Contrast CTA */}
-              <div className="p-6 pt-2 text-right">
+              <div className="p-5 sm:p-6 pt-2 text-right">
                 <div className="pt-4 border-t border-[#C8C8C6]/50 mb-4 flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#AFAFAD]">
-                    إجمالي الـOutfit الدقيق
-                  </span>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-black text-[#1C1C1C] font-mono">
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                      <span className="text-[11px] text-[#777777] line-through font-mono">
+                        {outfit.separatePrice.toLocaleString('ar-EG')} ج.م
+                      </span>
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                        وفّر 150 ج.م
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-[#1C1C1C] block">
+                      سعر الـLook كاملة
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1 font-mono text-[#1C1C1C]">
+                    <span className="text-2xl sm:text-3xl font-black">
                       {outfit.totalPrice.toLocaleString('ar-EG')}
                     </span>
-                    <span className="text-xs font-bold text-[#1C1C1C]/80">
+                    <span className="text-xs font-bold text-[#555555]">
                       جنيه
                     </span>
                   </div>
@@ -132,7 +142,7 @@ export const OfferSection: React.FC<OfferSectionProps> = ({
                 <button
                   onClick={() => onSelectOutfit(outfit)}
                   id={`offer-cta-btn-${outfit.id}`}
-                  className="w-full py-4 px-5 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] font-bold text-sm hover:bg-[#2E2E2E] transition-all duration-200 shadow-md flex items-center justify-center gap-2 focus:outline-none hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full py-4 px-5 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] font-bold text-sm hover:bg-[#2E2E2E] transition-all duration-200 shadow-md flex items-center justify-center gap-2 focus:outline-none hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                 >
                   <span>اختار الـOutfit دي</span>
                   <ArrowLeft className="w-4 h-4" />
@@ -140,7 +150,7 @@ export const OfferSection: React.FC<OfferSectionProps> = ({
 
                 <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-[#AFAFAD]">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#AFAFAD]" />
-                  <span>دفع عند الاستلام أو Vodafone Cash • استبدال 14 يوم</span>
+                  <span>دفع عند الاستلام نقداً بعد المعاينة • استبدال 14 يوم</span>
                 </div>
               </div>
             </div>

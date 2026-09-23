@@ -16,7 +16,7 @@ export const PiecesAccordionPricingSection: React.FC<PiecesAccordionPricingSecti
     {
       title: '1. التيشيرت (بوليفار أصلي / فاخر — Oversize Fit)',
       content:
-        'نسيج بوليفار بملمس ناعم، متانة عالية ومقاومة للتآكل والتجعد مع ثبات ممتاز للشكل بعد الاستخدام والغسيل المتكرر، ياقة متينة تحافظ على شكلها، ومتاح بسادة (450 ج.م) أو بتصميم جرافيك "COURAGEOUS" عالي الدقة (499 ج.م).',
+        'نسيج بوليفار بملمس ناعم، متانة عالية ومقاومة للتآكل والتجعد مع ثبات ممتاز للشكل بعد الاستخدام والغسيل المتكرر، ياقة متينة تحافظ على شكلها، ومتاح بسادة (500 ج.م) أو بتصميم جرافيك "COURAGEOUS" الأوفرسايز (549 ج.م).',
     },
     {
       title: '2. بنطلون الجينز (خامة رباعية 95% قطن و5% ليكرا — ضمان عام)',
@@ -99,19 +99,27 @@ export const PiecesAccordionPricingSection: React.FC<PiecesAccordionPricingSecti
               
               {/* Price Header */}
               <div className="border-b border-[#C8C8C6]/20 pb-5 mb-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-2 py-0.5 rounded bg-[#FFFFFF] text-[#1C1C1C] text-[10px] font-mono font-bold">
+                    SUMMER CLEARANCE
+                  </span>
+                  <span className="text-xs font-bold text-[#EAEAEA]">
+                    وفّر 150 جنيه على الـLook
+                  </span>
+                </div>
                 <span className="text-xs font-bold text-[#AFAFAD] block mb-1">
-                  السعر التجميعي الشفاف
+                  سعر الـLook الكاملة بعد الخصم
                 </span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl sm:text-4xl font-black font-mono text-[#FFFFFF]">
-                    1,500 ج.م
+                    تبدأ من 1,500 ج.م
                   </span>
-                  <span className="text-xs text-[#AFAFAD]">
-                    تبدأ من 1,500 ج.م حسب اختيار الـLook
+                  <span className="text-xs text-[#AFAFAD] line-through font-mono">
+                    1,650 ج.م
                   </span>
                 </div>
-                <span className="text-[11px] text-[#C8C8C6] block mt-1">
-                  شامل الـ3 قطع المنسقة (تيشيرت بوليفار + جينز عالي الجودة + كوتشي)
+                <span className="text-[11px] text-[#C8C8C6] block mt-1.5">
+                  شامل الـ3 قطع المنسقة (تيشيرت بوليفار + جينز + كوتشي سنيكرز)
                 </span>
               </div>
 

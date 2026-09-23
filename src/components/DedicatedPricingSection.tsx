@@ -18,7 +18,8 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
   const currentOutfit = OUTFITS[selectedOutfitIndex] || OUTFITS[0];
 
   const handleAddToCart = () => {
-    // Add all 3 pieces of the selected outfit to cart
+    // Add all 3 pieces of the selected outfit to cart as a bundled Look
+    const bundleId = `bundle-${Date.now()}-${currentOutfit.id}`;
     currentOutfit.pieces.forEach((piece) => {
       const defaultSize = piece.category === 'tshirt' ? 'L' : piece.category === 'jeans' ? '32' : '43';
       addToCart({
@@ -33,6 +34,12 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
         image: currentOutfit.image,
         quantity: 1,
         outfitName: currentOutfit.name,
+        outfitId: currentOutfit.id,
+        bundleId,
+        isLookPiece: true,
+        lookPrice: currentOutfit.totalPrice,
+        lookSeparatePrice: currentOutfit.separatePrice,
+        lookSavings: 150,
       });
     });
 
@@ -50,9 +57,11 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
       <div className="max-w-[840px] mx-auto px-3.5 sm:px-6">
         
         {/* Centered Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FFFFFF]/[0.08] border border-[#C8C8C6]/30 text-xs font-bold text-[#EAEAEA] mb-3 sm:mb-4">
-          <Sparkles className="w-3.5 h-3.5 text-[#EAEAEA]" />
-          <span>اطلب الآن تفاصيل واستلام الأوتفيت</span>
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FFFFFF]/[0.08] border border-[#C8C8C6]/30 text-xs font-bold text-[#EAEAEA] mb-3 sm:mb-4">
+          <span className="px-2 py-0.5 rounded-[5px] bg-[#FFFFFF] text-[#1C1C1C] text-[10px] font-mono font-black tracking-wider">
+            ☀ SUMMER CLEARANCE
+          </span>
+          <span>توفير 150 جنيه على أي Look كاملة</span>
         </div>
 
         {/* Centered Headline */}
@@ -60,7 +69,7 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
           تنسيقات Ultra One Fit الرسمية
         </h2>
         <p className="text-xs sm:text-sm text-[#AFAFAD] max-w-[560px] mx-auto mb-8 sm:mb-10">
-          اختر الـLook المناسب ليومك، استعرض تفاصيل قطعه الـ3 المتناسقة، ثم كمل طلبك أو ضيفه للسلة بضغطة واحدة.
+          اختر الـLook المناسب ليومك، استعرض تفاصيل قطعه الـ3 المتناسقة، مع توفير فوري 150 جنيه مقارنة بشراء القطع منفصلة.
         </p>
 
         {/* STEP 1: Select the Look */}
@@ -73,12 +82,12 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
               حدد الـLook المطلوب أولاً:
             </span>
             <span className="text-[11px] text-[#AFAFAD] font-mono">
-              3 تنسيقات رسمية معتمدة
+              7 تنسيقات رسمية معتمدة
             </span>
           </div>
 
-          {/* 3 Looks Selection Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3.5">
+          {/* 7 Looks Selection Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-2.5">
             {OUTFITS.map((outfit, index) => {
               const isSelected = selectedOutfitIndex === index;
               return (
@@ -89,40 +98,39 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
                     setSelectedOutfitIndex(index);
                     setAddedToCartSuccess(false);
                   }}
-                  className={`p-3.5 sm:p-4 rounded-[14px] border text-right transition-all duration-200 focus:outline-none relative ${
+                  className={`p-3 rounded-[12px] border text-right transition-all duration-200 focus:outline-none relative flex flex-col justify-between cursor-pointer ${
                     isSelected
                       ? 'bg-[#FFFFFF] text-[#1C1C1C] border-[#FFFFFF] shadow-lg ring-2 ring-[#FFFFFF]/50'
                       : 'bg-[#FFFFFF]/[0.05] text-[#EAEAEA] border-[#C8C8C6]/25 hover:bg-[#FFFFFF]/[0.09] hover:border-[#C8C8C6]/40'
                   }`}
                   id={`select-look-btn-${index + 1}`}
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <span
-                      className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-[6px] uppercase tracking-wider ${
-                        isSelected
-                          ? 'bg-[#1C1C1C] text-[#FFFFFF]'
-                          : 'bg-[#FFFFFF]/10 text-[#C8C8C6]'
-                      }`}
-                    >
-                      LOOK {outfit.number}
-                    </span>
-                    {isSelected && (
-                      <span className="w-5 h-5 rounded-full bg-[#1C1C1C] text-[#FFFFFF] flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 stroke-[3]" />
+                  <div>
+                    <div className="flex items-start justify-between mb-1.5">
+                      <span
+                        className={`text-[9.5px] font-mono font-black px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                          isSelected
+                            ? 'bg-[#1C1C1C] text-[#FFFFFF]'
+                            : 'bg-[#FFFFFF]/10 text-[#C8C8C6]'
+                        }`}
+                      >
+                        {outfit.number}
                       </span>
-                    )}
+                      {isSelected && (
+                        <span className="w-4 h-4 rounded-full bg-[#1C1C1C] text-[#FFFFFF] flex items-center justify-center shrink-0">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </span>
+                      )}
+                    </div>
+
+                    <div className={`font-black text-xs mb-1 line-clamp-1 ${isSelected ? 'text-[#1C1C1C]' : 'text-[#FFFFFF]'}`}>
+                      {outfit.name}
+                    </div>
                   </div>
 
-                  <div className={`font-black text-sm sm:text-base mb-1 ${isSelected ? 'text-[#1C1C1C]' : 'text-[#FFFFFF]'}`}>
-                    {outfit.name}
-                  </div>
-                  <div className={`text-[11px] mb-2.5 line-clamp-1 ${isSelected ? 'text-[#1C1C1C]/75' : 'text-[#AFAFAD]'}`}>
-                    {outfit.occasionTag}
-                  </div>
-
-                  <div className="flex items-baseline justify-between pt-2 border-t border-current/10">
-                    <span className="text-[10px] opacity-70">3 قطع كاملة</span>
-                    <span className="font-mono font-black text-xs sm:text-sm">
+                  <div className="flex items-baseline justify-between pt-1.5 border-t border-current/10 mt-2">
+                    <span className="text-[9px] opacity-70">3 قطع</span>
+                    <span className="font-mono font-black text-[11px]">
                       {outfit.totalPrice.toLocaleString('ar-EG')} ج.م
                     </span>
                   </div>
@@ -136,7 +144,7 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
         <div className="rounded-[18px] sm:rounded-[22px] bg-[#FFFFFF] text-[#1C1C1C] border border-[#C8C8C6] shadow-2xl p-4 sm:p-7 md:p-8 text-right relative overflow-hidden transition-all duration-300">
           
           {/* Active Look Header Badge */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-4 sm:pb-5 border-b border-[#C8C8C6]/50 mb-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-5 border-b border-[#C8C8C6]/50 mb-5">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="px-2.5 py-0.5 rounded-full bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono font-black">
@@ -151,17 +159,31 @@ export const DedicatedPricingSection: React.FC<DedicatedPricingSectionProps> = (
               </h3>
             </div>
 
-            {/* Total Price & Pieces count pill */}
-            <div className="sm:text-left flex items-baseline sm:flex-col justify-between gap-1">
-              <span className="inline-block px-2.5 py-1 rounded-full bg-[#1C1C1C]/[0.06] text-[#1C1C1C] text-[11px] font-bold">
-                عدد القطع: 3 قطع متناسقة
-              </span>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-2xl sm:text-3xl font-black font-mono text-[#1C1C1C]">
-                  {currentOutfit.totalPrice.toLocaleString('ar-EG')}
+            {/* Total Price & Savings Breakdown */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 justify-between sm:justify-end">
+              <div className="text-right sm:text-left">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] text-[#777777] line-through font-mono">
+                    {currentOutfit.separatePrice.toLocaleString('ar-EG')} ج.م
+                  </span>
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                    وفّر 150 ج.م
+                  </span>
+                </div>
+                <span className="text-xl sm:text-2xl font-black font-mono text-[#1C1C1C]">
+                  {currentOutfit.totalPrice.toLocaleString('ar-EG')} ج.م
                 </span>
-                <span className="text-xs font-bold text-[#1C1C1C]/70">جنيه</span>
               </div>
+
+              <button
+                type="button"
+                onClick={() => onSelectOutfit(currentOutfit)}
+                className="px-4 py-2.5 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] hover:bg-[#000000] text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+                title={`عرض صفحة ${currentOutfit.name} كاملة مع المقاسات`}
+              >
+                <span>شوف الـLook</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 

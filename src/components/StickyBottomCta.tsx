@@ -18,9 +18,12 @@ export const StickyBottomCta: React.FC<StickyBottomCtaProps> = ({
         <button
           onClick={onScrollToOrderSection}
           id="sticky-bar-action-btn"
-          className="h-[44px] sm:h-[46px] px-6 sm:px-8 rounded-full bg-[#FFFFFF] text-[#1C1C1C] font-extrabold text-xs sm:text-sm hover:bg-[#EAEAEA] transition-all duration-200 shadow-md flex items-center justify-center gap-2 focus:outline-none active:scale-95"
+          className="h-[44px] sm:h-[46px] px-5 sm:px-7 rounded-full bg-[#FFFFFF] text-[#1C1C1C] font-extrabold text-xs sm:text-sm hover:bg-[#EAEAEA] transition-all duration-200 shadow-md flex items-center justify-center gap-2 focus:outline-none active:scale-95 cursor-pointer"
         >
-          <span>اطلب الـ Outfit</span>
+          <span className="px-2 py-0.5 rounded-full bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono font-bold">
+            وفّر 150 ج.م
+          </span>
+          <span>اطلب الـLook كاملة</span>
           <ArrowLeft className="w-4 h-4 text-[#1C1C1C]" />
         </button>
       </div>

@@ -27,7 +27,6 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
   const [governorate, setGovernorate] = useState<'Cairo' | 'Giza'>('Cairo');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerNotes, setCustomerNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'vodafone_cash'>('cod');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderCompletedRef, setOrderCompletedRef] = useState<string | null>(null);
@@ -56,7 +55,6 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
 
   const shippingFee = 80;
   const finalTotal = subtotal + shippingFee;
-  const vodafoneDeposit = Math.round(finalTotal * 0.1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,27 +73,36 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
     // Map each cart item preserving all variant, color, size, price, and quantity details
     const products = cart.map((item) => normalizeCartItemToProductSnapshot(item));
 
-    // Create complete immutable order snapshot
+    // Create concise summary of ordered items
+    const itemsSummary = products
+      .map((p) => `${p.productName} (${p.color} - ${p.size}) × ${p.quantity}`)
+      .join(' | ');
+
+    const uniqueBundles = new Set(
+      cart.filter((i) => i.bundleId || i.isLookPiece).map((i) => i.bundleId || i.outfitName)
+    );
+    const bundleSavings = uniqueBundles.size * 150;
+
+    // Create complete immutable order snapshot (Cash on Delivery exclusively)
+    const clearanceNote = bundleSavings > 0 ? `[عرض Summer Clearance - توفير ${bundleSavings} ج.م] ` : '';
     const orderSnapshot: OrderSnapshot = {
       orderId: generatedRef,
       name: customerName.trim(),
       phone: customerPhone.trim(),
-      governorate,
+      governorate: governorate === 'Cairo' ? 'القاهرة (Cairo)' : 'الجيزة (Giza)',
       address: customerAddress.trim(),
-      paymentMethod:
-        paymentMethod === 'cod'
-          ? 'Cash on Delivery'
-          : 'Vodafone Cash / Deposit',
-      depositAmount: paymentMethod === 'vodafone_cash' ? vodafoneDeposit : 0,
-      deliveryTime:
-        paymentMethod === 'vodafone_cash'
-          ? '1-2 Business Days'
-          : '3-4 Business Days',
+      paymentMethod: 'Cash on Delivery',
+      depositAmount: 0,
+      deliveryTime: '3-4 Business Days',
       products,
+      itemCount: products.reduce((acc, p) => acc + p.quantity, 0),
+      itemsSummary,
       subtotal,
       shipping: shippingFee,
       total: finalTotal,
-      notes: customerNotes.trim(),
+      notes: `${clearanceNote}${customerNotes.trim()}`.trim(),
+      orderDate: new Date().toLocaleString('ar-EG'),
+      timestamp: new Date().toISOString(),
     };
 
     try {
@@ -126,7 +133,7 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
             items: cart,
             total: finalTotal,
             customerName,
-            paymentMethod,
+            paymentMethod: 'cod',
             orderSnapshot,
           });
         }
@@ -214,21 +221,11 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
               </div>
               <div className="flex justify-between">
                 <span className="text-[#AFAFAD]">طريقة الدفع:</span>
-                <span className="font-bold text-[#1C1C1C]">
-                  {paymentMethod === 'cod' ? 'الدفع عند الاستلام' : 'Vodafone Cash / Deposit'}
-                </span>
+                <span className="font-bold text-[#1C1C1C]">الدفع عند الاستلام (COD)</span>
               </div>
-              {paymentMethod === 'vodafone_cash' && (
-                <div className="flex justify-between">
-                  <span className="text-[#AFAFAD]">قيمة العربون (10%):</span>
-                  <span className="font-mono font-bold text-[#1C1C1C]">{vodafoneDeposit} جنيه</span>
-                </div>
-              )}
               <div className="flex justify-between">
                 <span className="text-[#AFAFAD]">مدة التوصيل:</span>
-                <span className="font-bold text-[#1C1C1C]">
-                  {paymentMethod === 'cod' ? '3–4 أيام عمل' : '1–2 يوم عمل'}
-                </span>
+                <span className="font-bold text-[#1C1C1C]">3–4 أيام عمل</span>
               </div>
             </div>
 
@@ -267,12 +264,39 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
                   ))}
                 </div>
 
-                <div className="pt-2 border-t border-[#C8C8C6]/40 flex items-center justify-between text-xs text-[#AFAFAD]">
-                  <span>شحن القاهرة والجيزة (3-4 أيام):</span>
-                  <span className="font-mono font-bold text-[#1C1C1C]">{shippingFee} جنيه</span>
+                <div className="pt-2 border-t border-[#C8C8C6]/40 space-y-1.5 text-xs">
+                  {(() => {
+                    const uniqueBundles = new Set(
+                      cart.filter((i) => i.bundleId || i.isLookPiece).map((i) => i.bundleId || i.outfitName)
+                    );
+                    const bundleSavings = uniqueBundles.size * 150;
+                    if (bundleSavings === 0) return null;
+                    return (
+                      <>
+                        <div className="flex items-center justify-between text-[#777777]">
+                          <span>إجمالي القطع منفصلة:</span>
+                          <span className="font-mono line-through">{subtotal + bundleSavings} جنيه</span>
+                        </div>
+                        <div className="flex items-center justify-between text-[#1C1C1C] font-bold">
+                          <span className="flex items-center gap-1.5">
+                            <span className="px-1.5 py-0.5 rounded bg-[#1C1C1C] text-[#FFFFFF] text-[9px] font-mono">
+                              CLEARANCE
+                            </span>
+                            <span>خصم الـLooks:</span>
+                          </span>
+                          <span className="font-mono text-emerald-700">-{bundleSavings} جنيه</span>
+                        </div>
+                      </>
+                    );
+                  })()}
+
+                  <div className="flex items-center justify-between text-[#AFAFAD]">
+                    <span>شحن القاهرة والجيزة (3-4 أيام):</span>
+                    <span className="font-mono font-bold text-[#1C1C1C]">{shippingFee} جنيه</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between text-sm font-black text-[#1C1C1C] pt-1">
+                <div className="flex items-center justify-between text-sm font-black text-[#1C1C1C] pt-1 border-t border-[#C8C8C6]/40">
                   <span>الإجمالي النهائي للدفع:</span>
                   <span className="font-mono text-base">{finalTotal} جنيه</span>
                 </div>
@@ -369,49 +393,24 @@ export const CartCheckoutModal: React.FC<CartCheckoutModalProps> = ({
                   />
                 </div>
 
-                {/* Payment Method Selector */}
+                {/* Payment Method Display (Cash on Delivery exclusively) */}
                 <div>
                   <label className="block font-bold text-[#1C1C1C] mb-2">طريقة الدفع</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('cod')}
-                      className={`p-3 rounded-xl border text-right transition-all flex items-start gap-2.5 ${
-                        paymentMethod === 'cod'
-                          ? 'border-[#1C1C1C] bg-[#1C1C1C]/[0.04]'
-                          : 'border-[#C8C8C6] hover:border-[#1C1C1C]/40'
-                      }`}
-                    >
-                      <div className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
-                        paymentMethod === 'cod' ? 'border-[#1C1C1C] bg-[#1C1C1C]' : 'border-[#C8C8C6]'
-                      }`}>
-                        {paymentMethod === 'cod' && <span className="w-1.5 h-1.5 rounded-full bg-[#FFFFFF]" />}
+                  <div className="p-3.5 rounded-xl border border-[#1C1C1C] bg-[#1C1C1C]/[0.03] text-right flex items-start gap-3">
+                    <div className="w-4 h-4 rounded-full border border-[#1C1C1C] bg-[#1C1C1C] mt-0.5 flex items-center justify-center shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFFFFF]" />
+                    </div>
+                    <div>
+                      <div className="font-black text-xs sm:text-sm text-[#1C1C1C] flex items-center gap-2">
+                        <span>الدفع عند الاستلام (Cash on Delivery)</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#1C1C1C] text-[#FFFFFF] font-bold">
+                          المعتمد
+                        </span>
                       </div>
-                      <div>
-                        <div className="font-bold text-[#1C1C1C]">الدفع عند الاستلام</div>
-                        <div className="text-[10px] text-[#AFAFAD]">تدفع كاش للمندوب بعد المعاينة</div>
+                      <div className="text-[11px] text-[#555555] mt-0.5 leading-relaxed">
+                        عاين طلبك واستلمه الأول، وادفع كاش للمندوب بعد التأكد من المقاسات وجودة القطع.
                       </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod('vodafone_cash')}
-                      className={`p-3 rounded-xl border text-right transition-all flex items-start gap-2.5 ${
-                        paymentMethod === 'vodafone_cash'
-                          ? 'border-[#1C1C1C] bg-[#1C1C1C]/[0.04]'
-                          : 'border-[#C8C8C6] hover:border-[#1C1C1C]/40'
-                      }`}
-                    >
-                      <div className={`w-4 h-4 rounded-full border mt-0.5 flex items-center justify-center shrink-0 ${
-                        paymentMethod === 'vodafone_cash' ? 'border-[#1C1C1C] bg-[#1C1C1C]' : 'border-[#C8C8C6]'
-                      }`}>
-                        {paymentMethod === 'vodafone_cash' && <span className="w-1.5 h-1.5 rounded-full bg-[#FFFFFF]" />}
-                      </div>
-                      <div>
-                        <div className="font-bold text-[#1C1C1C]">Vodafone Cash</div>
-                        <div className="text-[10px] text-[#AFAFAD]">تحويل 10% مقدم ({vodafoneDeposit} ج.م) والباقي استلام</div>
-                      </div>
-                    </button>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -27,7 +27,7 @@ interface LookDetailPageProps {
   outfit: Outfit;
   onBackToOutfits: () => void;
   onOpenSizeChart: () => void;
-  onOpenProductDetails?: (product: CatalogProduct) => void;
+  onOpenProductDetails?: (product: CatalogProduct, initialColor?: string) => void;
   onSelectOtherOutfit?: (outfit: Outfit) => void;
 }
 
@@ -44,7 +44,7 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
   onOpenProductDetails,
   onSelectOtherOutfit,
 }) => {
-  const { addToCart, setCartCheckoutModalOpen } = useCart();
+  const { addToCart, setCartCheckoutModalOpen, setCartDrawerOpen } = useCart();
   const { trackEvent } = useAnalytics();
 
   // Look Gallery: ONLY look/model/editorial photos
@@ -149,6 +149,30 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
     return OFFICIAL_CATALOG_PRODUCTS.find((p) => p.id === catalogProductId);
   };
 
+  // Centralized resolver for piece images based on selected color
+  const resolvePieceImage = (piece: ProductPiece, selectedColorName?: string): string => {
+    const catalogInfo = getCatalogData(piece.catalogProductId);
+    const colorToMatch = selectedColorName || piece.colorName;
+
+    if (catalogInfo?.colorGalleries && colorToMatch) {
+      if (catalogInfo.colorGalleries[colorToMatch]?.[0]) {
+        return catalogInfo.colorGalleries[colorToMatch][0];
+      }
+      const trimmed = colorToMatch.trim().toLowerCase();
+      const match = Object.keys(catalogInfo.colorGalleries).find((k) => {
+        const kLow = k.trim().toLowerCase();
+        return kLow === trimmed || kLow.includes(trimmed) || trimmed.includes(kLow);
+      });
+      if (match && catalogInfo.colorGalleries[match]?.[0]) {
+        return catalogInfo.colorGalleries[match][0];
+      }
+    }
+
+    if (piece.image) return piece.image;
+    if (catalogInfo?.image) return catalogInfo.image;
+    return outfit.image;
+  };
+
   // Add the 3 items to cart
   const executeAddToCart = (proceedToCheckout: boolean) => {
     if (!allSizesSelected) {
@@ -165,11 +189,12 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
       return;
     }
 
-    // Add each of the 3 pieces to the cart
+    // Add each of the 3 pieces to the cart with look bundle metadata
+    const bundleId = `bundle-${Date.now()}-${outfit.id}`;
     outfit.pieces.forEach((piece) => {
       const sel = pieceSelections[piece.id];
       const catalogInfo = getCatalogData(piece.catalogProductId);
-      const pieceImage = piece.image || catalogInfo?.image || outfit.image;
+      const pieceImage = resolvePieceImage(piece, sel.color);
 
       addToCart({
         productId: piece.catalogProductId || piece.id,
@@ -188,6 +213,12 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
         price: piece.price,
         image: pieceImage,
         outfitName: outfit.name,
+        outfitId: outfit.id,
+        bundleId,
+        isLookPiece: true,
+        lookPrice: outfit.totalPrice,
+        lookSeparatePrice: outfit.separatePrice,
+        lookSavings: 150,
         warranty: catalogInfo?.warranty,
       });
     });
@@ -207,8 +238,12 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
     }
   };
 
-    // Filter other 2 outfits for switcher at bottom
-  const otherOutfits = OUTFITS.filter((o) => o.id !== outfit.id);
+    // Filter other outfits (priority to recommended looks if defined)
+  const otherOutfits = outfit.recommendedLookIds && outfit.recommendedLookIds.length > 0
+    ? outfit.recommendedLookIds
+        .map((id) => OUTFITS.find((o) => o.id === id))
+        .filter((o): o is Outfit => Boolean(o))
+    : OUTFITS.filter((o) => o.id !== outfit.id).slice(0, 3);
 
   // Smooth scroll directly to the pieces selection section without triggering route changes
   const scrollToPieces = (e?: React.MouseEvent) => {
@@ -406,23 +441,38 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
             </div>
 
             {/* Quick Pricing Box & Scroll CTA */}
-            <div className="p-5 rounded-[20px] bg-[#FFFFFF] border border-[#1C1C1C] shadow-md space-y-4">
-              <div className="flex items-baseline justify-between">
+            <div className="p-4 sm:p-6 rounded-[20px] bg-[#FFFFFF] border border-[#C8C8C6] shadow-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#C8C8C6]/40">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[5px] bg-[#1C1C1C] text-[#FFFFFF] text-[10px] sm:text-[11px] font-mono font-bold tracking-wider shrink-0">
+                  ☀ SUMMER CLEARANCE
+                </span>
+                <span className="text-xs font-bold text-[#1C1C1C]">
+                  وفّر 150 جنيه عند طلب الـLook كاملة
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
                 <div>
-                  <span className="text-xs text-[#555555] block font-medium">
-                    سعر الـLook الكامل (3 قطع):
-                  </span>
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="text-xs text-[#777777] line-through font-mono">
+                      {outfit.separatePrice.toLocaleString('ar-EG')} جنيه
+                    </span>
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                      وفّر 150 جنيه
+                    </span>
+                  </div>
                   <div className="flex items-baseline gap-1.5 mt-0.5 font-mono">
                     <span className="text-3xl sm:text-4xl font-black text-[#1C1C1C]">
-                      {calculatedTotal.toLocaleString()}
+                      {outfit.totalPrice.toLocaleString('ar-EG')}
                     </span>
                     <span className="text-sm font-bold text-[#555555]">جنيه</span>
+                    <span className="text-[11px] font-sans text-[#777777] mr-1">(شامل الـ 3 قطع)</span>
                   </div>
                 </div>
 
-                <div className="text-left">
-                  <span className="text-[11px] text-[#555555] block">الشحن</span>
-                  <span className="text-xs font-bold text-[#1C1C1C] bg-[#F4F4F4] px-2.5 py-1 rounded-md inline-block border border-[#C8C8C6]/50">
+                <div className="text-right sm:text-left pt-2 sm:pt-0 border-t sm:border-t-0 border-[#C8C8C6]/30">
+                  <span className="text-[11px] text-[#777777] block">الشحن والتوصيل</span>
+                  <span className="text-xs font-bold text-[#1C1C1C]">
                     3–4 أيام عمل (80 ج.م)
                   </span>
                 </div>
@@ -484,13 +534,14 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {outfit.pieces.map((piece, index) => {
               const catalogInfo = getCatalogData(piece.catalogProductId);
-              const pieceImage = piece.image || catalogInfo?.image || outfit.image;
               const currentSel = pieceSelections[piece.id] || {
                 color: piece.colorName,
                 colorHex: piece.colorHex,
                 size: '',
               };
               const isMissingSize = attemptedSubmit && currentSel.size === '';
+
+              const pieceImage = resolvePieceImage(piece, currentSel.color);
 
               // Available colors
               const availableColors: ColorSwatchOption[] =
@@ -540,7 +591,7 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
                       {catalogInfo && onOpenProductDetails && (
                         <button
                           type="button"
-                          onClick={() => onOpenProductDetails(catalogInfo)}
+                          onClick={() => onOpenProductDetails(catalogInfo, currentSel.color)}
                           className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/75 hover:bg-black text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md backdrop-blur-sm transition-all hover:scale-105"
                           title="عرض تفاصيل المنتج في الكتالوج"
                         >
@@ -657,7 +708,7 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
                     {catalogInfo && onOpenProductDetails && (
                       <button
                         type="button"
-                        onClick={() => onOpenProductDetails(catalogInfo)}
+                        onClick={() => onOpenProductDetails(catalogInfo, currentSel.color)}
                         className="text-xs font-bold text-[#1C1C1C] hover:underline flex items-center gap-1 py-1 px-2 rounded-md hover:bg-[#F4F4F4]"
                       >
                         <span>تفاصيل القطعة</span>
@@ -740,27 +791,38 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
             </div>
 
             {/* Total pricing calculation */}
-            <div className="border-t border-[#C8C8C6] pt-4 mb-6 space-y-2">
-              <div className="flex items-center justify-between text-xs sm:text-sm text-[#555555]">
-                <span>المجموع الفرعي (3 قطع):</span>
-                <span className="font-mono font-bold text-[#1C1C1C]">{calculatedTotal} ج.م</span>
+            <div className="border-t border-[#C8C8C6] pt-4 mb-6 space-y-2.5 text-xs sm:text-sm">
+              <div className="flex items-center justify-between text-[#777777]">
+                <span>إجمالي القطع منفصلة (3 قطع):</span>
+                <span className="font-mono line-through">{outfit.separatePrice.toLocaleString('ar-EG')} ج.م</span>
               </div>
-              <div className="flex items-center justify-between text-xs sm:text-sm text-[#555555]">
+              <div className="flex items-center justify-between font-bold text-[#1C1C1C]">
+                <span className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#1C1C1C] text-[#FFFFFF]">CLEARANCE</span>
+                  <span>خصم الـLook الكاملة:</span>
+                </span>
+                <span className="font-mono text-emerald-700 font-bold">-150 ج.م</span>
+              </div>
+              <div className="flex items-center justify-between font-bold text-[#1C1C1C]">
+                <span>سعر الـLook بعد الخصم:</span>
+                <span className="font-mono text-sm sm:text-base">{outfit.totalPrice.toLocaleString('ar-EG')} ج.م</span>
+              </div>
+              <div className="flex items-center justify-between text-[#777777]">
                 <span>شحن وتوصيل (القاهرة والجيزة):</span>
                 <span className="font-mono font-bold text-[#1C1C1C]">80 ج.م</span>
               </div>
-              <div className="border-t border-[#C8C8C6]/60 pt-3 flex items-baseline justify-between">
+              <div className="border-t border-[#C8C8C6]/60 pt-3 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1.5 sm:gap-2">
                 <div>
                   <span className="text-sm sm:text-base font-black text-[#1C1C1C]">
                     الإجمالي النهائي شامل التوصيل:
                   </span>
-                  <span className="block text-[11px] text-[#555555]">
-                    الدفع عند الاستلام بعد المعاينة أو Vodafone Cash
+                  <span className="block text-[11px] text-[#777777]">
+                    الدفع عند الاستلام نقداً بعد المعاينة والفحص
                   </span>
                 </div>
-                <div className="flex items-baseline gap-1 font-mono text-[#1C1C1C]">
+                <div className="flex items-baseline gap-1 font-mono text-[#1C1C1C] self-end sm:self-auto">
                   <span className="text-2xl sm:text-3xl font-black">
-                    {(calculatedTotal + 80).toLocaleString()}
+                    {(outfit.totalPrice + 80).toLocaleString('ar-EG')}
                   </span>
                   <span className="text-sm font-bold text-[#555555]">جنيه</span>
                 </div>
@@ -769,9 +831,18 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
 
             {/* Notification alert */}
             {addedNotification && (
-              <div className="mb-4 p-3.5 rounded-[12px] bg-green-50 border border-green-200 text-xs text-green-800 font-bold text-center flex items-center justify-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-600" />
-                <span>{addedNotification}</span>
+              <div className="mb-4 p-3.5 rounded-[12px] bg-green-50 border border-green-200 text-xs text-green-800 font-bold flex items-center justify-between gap-2 animate-in fade-in">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                  <span>{addedNotification}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCartDrawerOpen(true)}
+                  className="px-3 py-1.5 rounded-lg bg-[#1C1C1C] text-[#FFFFFF] font-bold text-xs hover:bg-[#000000] shrink-0 transition-all"
+                >
+                  فتح السلة
+                </button>
               </div>
             )}
 
@@ -838,7 +909,7 @@ export const LookDetailPage: React.FC<LookDetailPageProps> = ({
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-[800px] mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[1050px] mx-auto">
               {otherOutfits.map((other) => (
                 <div
                   key={other.id}

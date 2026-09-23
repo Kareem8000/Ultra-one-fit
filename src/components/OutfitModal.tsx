@@ -34,7 +34,6 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
   const [governorate, setGovernorate] = useState<'Cairo' | 'Giza'>('Cairo');
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerNotes, setCustomerNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'vodafone_cash'>('cod');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [orderRef, setOrderRef] = useState('');
@@ -58,7 +57,6 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
 
   const shippingFee = 80; // Cairo/Giza shipping 80 EGP fixed
   const finalTotal = outfit.totalPrice + shippingFee;
-  const vodafoneDeposit = Math.round(finalTotal * 0.1);
 
   const handleSizeSelect = (category: string, size: string) => {
     setSelectedSizes((prev) => ({ ...prev, [category]: size }));
@@ -78,39 +76,43 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
 
     const generatedRef = generateOrderId();
 
-    // Map the 3 pieces of the outfit preserving all selected sizes and prices
+    // Map the 3 pieces of the outfit preserving all selected sizes, categories, and prices
     const products: OrderProductSnapshot[] = outfit.pieces.map((piece) => ({
-      productId: piece.id,
+      productId: piece.catalogProductId || piece.id,
       productName: `${outfit.name} - ${piece.name}`,
+      category: piece.category,
       color: piece.colorName || 'Default',
       size: selectedSizes[piece.category] || 'Standard',
       quantity: 1,
       unitPrice: piece.price,
       lineTotal: piece.price,
-      productType: piece.category,
       outfitName: outfit.name,
+      warranty: piece.warranty,
+      colorHex: piece.colorHex,
     }));
+
+    const itemsSummary = products
+      .map((p) => `${p.productName} (${p.color} - مقاس ${p.size})`)
+      .join(' | ');
 
     const orderSnapshot: OrderSnapshot = {
       orderId: generatedRef,
       name: customerName.trim(),
       phone: customerPhone.trim(),
-      governorate,
+      governorate: governorate === 'Cairo' ? 'القاهرة (Cairo)' : 'الجيزة (Giza)',
       address: customerAddress.trim(),
-      paymentMethod:
-        paymentMethod === 'cod'
-          ? 'Cash on Delivery'
-          : 'Vodafone Cash / Deposit',
-      depositAmount: paymentMethod === 'vodafone_cash' ? vodafoneDeposit : 0,
-      deliveryTime:
-        paymentMethod === 'vodafone_cash'
-          ? '1-2 Business Days'
-          : '3-4 Business Days',
+      paymentMethod: 'Cash on Delivery',
+      depositAmount: 0,
+      deliveryTime: '3-4 Business Days',
       products,
+      itemCount: products.length,
+      itemsSummary,
       subtotal: outfit.totalPrice,
       shipping: shippingFee,
       total: finalTotal,
-      notes: customerNotes.trim(),
+      notes: `[عرض Summer Clearance - توفير 150 ج.م على الـLook] ${customerNotes.trim()}`.trim(),
+      orderDate: new Date().toLocaleString('ar-EG'),
+      timestamp: new Date().toISOString(),
     };
 
     try {
@@ -138,7 +140,7 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
           outfitName: outfit.name,
           total: finalTotal,
           customerName,
-          paymentMethod,
+          paymentMethod: 'cod',
           orderSnapshot,
         });
       } else {
@@ -255,18 +257,23 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
             <div className="shrink-0 p-3.5 sm:p-4 border-t border-[#C8C8C6]/50 bg-[#FFFFFF] shadow-lg">
               <div className="flex items-baseline justify-between mb-3">
                 <div>
-                  <span className="text-xs font-bold text-[#AFAFAD] block">
-                    سعر الـOutfit كامل
-                  </span>
-                  <span className="text-[11px] text-[#AFAFAD]">
-                    (3 قطع متناسقة)
+                  <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                    <span className="text-[11px] text-[#777777] line-through font-mono">
+                      {outfit.separatePrice.toLocaleString('ar-EG')} جنيه
+                    </span>
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                      وفّر 150 جنيه
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-[#1C1C1C] block">
+                    سعر الـOutfit كامل (3 قطع)
                   </span>
                 </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl sm:text-3xl font-black text-[#1C1C1C] font-mono">
+                <div className="flex items-baseline gap-1 font-mono text-[#1C1C1C]">
+                  <span className="text-2xl sm:text-3xl font-black">
                     {outfit.totalPrice.toLocaleString('ar-EG')}
                   </span>
-                  <span className="text-xs font-bold text-[#1C1C1C]/80">
+                  <span className="text-xs font-bold text-[#555555]">
                     جنيه
                   </span>
                 </div>
@@ -274,7 +281,7 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
 
               <button
                 onClick={handleProceedToShipping}
-                className="w-full py-3.5 px-4 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] font-bold text-xs sm:text-sm hover:bg-[#2E2E2E] transition-all shadow-md flex items-center justify-center gap-2 focus:outline-none active:translate-y-0"
+                className="w-full py-3.5 px-4 rounded-xl bg-[#1C1C1C] text-[#FFFFFF] font-bold text-xs sm:text-sm hover:bg-[#2E2E2E] transition-all shadow-md flex items-center justify-center gap-2 focus:outline-none active:translate-y-0 cursor-pointer"
               >
                 <span>متابعة بيانات التوصيل (القاهرة)</span>
                 <ArrowLeft className="w-4 h-4" />
@@ -396,55 +403,51 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
                 </div>
               </div>
 
-              {/* Payment Method Selector */}
+              {/* Payment Method Display (Cash on Delivery exclusively) */}
               <div>
                 <label className="block text-xs font-bold text-[#1C1C1C] mb-1.5">
                   طريقة الدفع:
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('cod')}
-                    className={`p-3 rounded-xl border text-right transition-all focus:outline-none ${
-                      paymentMethod === 'cod'
-                        ? 'border-[#1C1C1C] bg-[#1C1C1C] text-[#FFFFFF]'
-                        : 'border-[#C8C8C6] bg-[#FFFFFF] text-[#1C1C1C] hover:bg-[#1C1C1C]/5'
-                    }`}
-                  >
-                    <div className="font-bold text-xs sm:text-sm mb-0.5">الدفع عند الاستلام</div>
-                    <div className="text-[11px] opacity-75">
-                      تدفع كامل المبلغ والمصاريف مع المندوب
+                <div className="p-3.5 rounded-xl border border-[#1C1C1C] bg-[#1C1C1C]/[0.03] text-right flex items-start gap-3">
+                  <div className="w-4 h-4 rounded-full border border-[#1C1C1C] bg-[#1C1C1C] mt-0.5 flex items-center justify-center shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFFFFF]" />
+                  </div>
+                  <div>
+                    <div className="font-black text-xs sm:text-sm text-[#1C1C1C] flex items-center gap-2">
+                      <span>الدفع عند الاستلام (Cash on Delivery)</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#1C1C1C] text-[#FFFFFF] font-bold">
+                        المعتمد
+                      </span>
                     </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('vodafone_cash')}
-                    className={`p-3 rounded-xl border text-right transition-all focus:outline-none ${
-                      paymentMethod === 'vodafone_cash'
-                        ? 'border-[#1C1C1C] bg-[#1C1C1C] text-[#FFFFFF]'
-                        : 'border-[#C8C8C6] bg-[#FFFFFF] text-[#1C1C1C] hover:bg-[#1C1C1C]/5'
-                    }`}
-                  >
-                    <div className="font-bold text-xs sm:text-sm mb-0.5">Vodafone Cash</div>
-                    <div className="text-[11px] opacity-75">
-                      عربون 10% ({vodafoneDeposit} ج.م) والباقي عند الاستلام
+                    <div className="text-[11px] text-[#555555] mt-0.5 leading-relaxed">
+                      استلم طقمك وعاينه وقيسه مع المندوب الأول وادفع نقداً بعد التأكد التام من الجودة والمقاس.
                     </div>
-                  </button>
+                  </div>
                 </div>
               </div>
 
               {/* Exact Cost Breakdown */}
-              <div className="p-3 sm:p-3.5 rounded-xl bg-[#1C1C1C]/[0.03] border border-[#C8C8C6] space-y-1.5 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-[#AFAFAD]">سعر الـOutfit (3 قطع)</span>
-                  <span className="font-mono font-bold text-[#1C1C1C]">{outfit.totalPrice} ج.م</span>
+              <div className="p-3.5 sm:p-4 rounded-xl bg-[#1C1C1C]/[0.03] border border-[#C8C8C6] space-y-2 text-xs">
+                <div className="flex justify-between text-[#777777]">
+                  <span>إجمالي القطع منفصلة (3 قطع)</span>
+                  <span className="font-mono line-through">{outfit.separatePrice} ج.م</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-[#AFAFAD]">شحن القاهرة والجيزة</span>
+                <div className="flex justify-between items-center text-[#1C1C1C] font-bold">
+                  <span className="flex items-center gap-1.5">
+                    <span className="px-1.5 py-0.5 rounded bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono">CLEARANCE</span>
+                    <span>خصم الـLook الكاملة:</span>
+                  </span>
+                  <span className="font-mono text-emerald-700 font-bold">-150 ج.م</span>
+                </div>
+                <div className="flex justify-between text-[#1C1C1C] font-bold">
+                  <span>سعر الـLook بعد الخصم</span>
+                  <span className="font-mono">{outfit.totalPrice} ج.م</span>
+                </div>
+                <div className="flex justify-between text-[#777777]">
+                  <span>شحن القاهرة والجيزة</span>
                   <span className="font-mono font-bold text-[#1C1C1C]">{shippingFee} ج.م</span>
                 </div>
-                <div className="pt-1.5 border-t border-[#C8C8C6]/50 flex justify-between text-xs sm:text-sm font-black text-[#1C1C1C]">
+                <div className="pt-2 border-t border-[#C8C8C6]/50 flex justify-between text-xs sm:text-sm font-black text-[#1C1C1C]">
                   <span>الإجمالي النهائي للدفع</span>
                   <span className="font-mono text-sm sm:text-base">{finalTotal} جنيه</span>
                 </div>
@@ -500,7 +503,7 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
               تم تسجيل طلب الـOutfit بنجاح!
             </h3>
             <p className="text-xs sm:text-sm text-[#1C1C1C]/75 max-w-[440px] mx-auto leading-relaxed mb-5">
-              شكراً لاختيارك Ultra One Fit يا {customerName}. فريقنا هيتواصل معاك هاتفياً أو عبر الواتساب لتأكيد شحن الـOutfit لعنوانك في {governorate === 'Cairo' ? 'القاهرة' : 'الجيزة'} خلال {paymentMethod === 'vodafone_cash' ? '1–2 يوم عمل' : '3–4 أيام عمل'}.
+              شكراً لاختيارك Ultra One Fit يا {customerName}. فريقنا هيتواصل معاك هاتفياً أو عبر الواتساب لتأكيد شحن الـOutfit لعنوانك في {governorate === 'Cairo' ? 'القاهرة' : 'الجيزة'} خلال 3–4 أيام عمل.
             </p>
 
             <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-[#C8C8C6] bg-[#1C1C1C]/[0.02] text-xs text-right max-w-[420px] mx-auto mb-6 space-y-1.5">
@@ -519,7 +522,7 @@ export const OutfitModal: React.FC<OutfitModalProps> = ({
               </div>
               <div className="flex justify-between text-[#1C1C1C]/80">
                 <span>طريقة الدفع:</span>
-                <span>{paymentMethod === 'cod' ? 'عند الاستلام' : `Vodafone Cash (عربون ${vodafoneDeposit} ج.م)`}</span>
+                <span className="font-bold text-[#1C1C1C]">الدفع عند الاستلام (COD)</span>
               </div>
               <div className="flex justify-between font-bold text-[#1C1C1C] pt-1 border-t border-[#C8C8C6]/40">
                 <span>المبلغ الإجمالي شامل الشحن:</span>

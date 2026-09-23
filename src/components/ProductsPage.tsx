@@ -5,7 +5,7 @@ import { OFFICIAL_CATALOG_PRODUCTS } from '../data/products';
 import { ProductCard } from './ProductCard';
 
 interface ProductsPageProps {
-  onOpenProductDetails: (product: CatalogProduct) => void;
+  onOpenProductDetails: (product: CatalogProduct, initialColor?: string) => void;
   onNavigateToOutfits: () => void;
 }
 
@@ -18,9 +18,9 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
       <div className="max-w-[1240px] mx-auto">
         
         {/* 05 — Minimal Editorial Hero */}
-        <section className="text-center max-w-[680px] mx-auto mb-10 sm:mb-14">
+        <section className="text-center max-w-[680px] mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#1C1C1C]/[0.05] border border-[#C8C8C6] text-[11px] font-bold text-[#1C1C1C] mb-3.5">
-            <span>المنتجات</span>
+            <span>المنتجات الرسمية</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-black text-[#1C1C1C] tracking-tight mb-3">
@@ -28,8 +28,33 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
           </h1>
 
           <p className="text-sm sm:text-base text-[#1C1C1C]/75 leading-relaxed">
-            شوف الخامة، القصة، الألوان، المقاسات والسعر قبل ما تختار.
+            شوف الخامة، القصة، الألوان، المقاسات والأسعار المعتمدة قبل ما تختار.
           </p>
+        </section>
+
+        {/* Summer Clearance Promo Banner on Products Page */}
+        <section className="max-w-[960px] mx-auto mb-10 sm:mb-12">
+          <div className="rounded-2xl bg-[#1C1C1C] text-[#FFFFFF] border border-[#C8C8C6]/20 p-5 sm:p-7 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[5px] bg-[#FFFFFF]/10 border border-white/20 text-[#FFFFFF] text-[10px] sm:text-[11px] font-mono font-black tracking-wider mb-2">
+                ☀ SUMMER CLEARANCE
+              </div>
+              <h2 className="text-lg sm:text-xl font-black text-[#FFFFFF] mb-1">
+                أسعار الصيف على القطع والـLooks
+              </h2>
+              <p className="text-xs sm:text-sm text-[#C8C8C6] max-w-[540px]">
+                اختار القطع اللي محتاجها، أو خُد Look كاملة ووفّر 150 جنيه مباشرة.
+              </p>
+            </div>
+
+            <button
+              onClick={onNavigateToOutfits}
+              className="inline-flex items-center justify-center gap-2 h-[42px] px-5 rounded-xl bg-[#FFFFFF] text-[#1C1C1C] font-bold text-xs sm:text-sm hover:bg-[#EAEAEA] transition-all shrink-0 shadow-sm hover:-translate-y-0.5 cursor-pointer"
+            >
+              <span>شوف الـLooks ووفر 150 جنيه</span>
+              <ArrowLeft className="w-3.5 h-3.5 text-[#1C1C1C]" />
+            </button>
+          </div>
         </section>
 
         {/* 06 — Product Grid (Exactly 6 products: Desktop 3x2, Tablet 2, Mobile 1) */}

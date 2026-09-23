@@ -58,7 +58,7 @@ export const Footer: React.FC<FooterProps> = ({
     },
     {
       label: 'تفاصيل الـ Look',
-      action: () => scrollToElement('pieces-accordion-pricing-section'),
+      action: () => scrollToElement('dedicated-pricing-section'),
     },
     {
       label: 'بيانات المودل',
@@ -101,10 +101,10 @@ export const Footer: React.FC<FooterProps> = ({
 
             {/* Essential Brand Shipping & Policy notes */}
             <div className="space-y-2 text-xs text-[#AFAFAD]">
-              <p>شحن القاهرة: 80 جنيه • التوصيل خلال 3–4 أيام عمل</p>
+              <p>شحن القاهرة والجيزة: 80 جنيه • التوصيل خلال 3–4 أيام عمل</p>
               <p>ضمان لمدة عام كامل على بنطلونات الجينز ضد عيوب الصناعة</p>
               <p>الاستبدال متاح خلال 14 يوم بحالته الأصلية</p>
-              <p>الدفع عند الاستلام أو Vodafone Cash (10% مقدماً)</p>
+              <p>الدفع عند الاستلام نقداً بعد المعاينة والفحص</p>
             </div>
 
             {/* Direct Order CTA in Footer */}
