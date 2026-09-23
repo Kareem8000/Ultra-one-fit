@@ -138,7 +138,7 @@ export function submitOrderToGoogleSheets(
       paymentMethod: orderData.paymentMethod,
       depositAmount: String(orderData.depositAmount ?? 0),
       deliveryTime: orderData.deliveryTime,
-      itemCount: String(orderData.itemCount ?? orderData.products.length),
+      itemCount: String(orderData.itemCount ?? (orderData.products?.length ?? 0)),
       itemsSummary: orderData.itemsSummary || '',
       subtotal: String(orderData.subtotal),
       shipping: String(orderData.shipping),

@@ -28,24 +28,41 @@ import {
   ADIDAS_BLACK_PRIMARY,
   ADIDAS_BLACK_IMAGES,
   ADIDAS_ALL_IMAGES,
+  NIKE_OFFWHITE_BLUE_PRIMARY,
+  NIKE_OFFWHITE_BLUE_IMAGES,
+  NIKE_OFFWHITE_PRIMARY,
+  NIKE_OFFWHITE_IMAGES,
+  NIKE_BLACK_PRIMARY,
+  NIKE_BLACK_IMAGES,
+  NIKE_GREY_PRIMARY,
+  NIKE_GREY_IMAGES,
+  NIKE_ALL_IMAGES,
 } from './products';
 
 import heroImg from '../assets/images/hero_editorial_egyptian_1789643433634.jpg';
-import lookAfterClassImg from '../assets/images/look_after_class_1789643444898.jpg';
-import lookEverydayImg from '../assets/images/look_everyday_1789643457106.jpg';
-import lookAfterDarkImg from '../assets/images/look_after_dark_1789643467421.jpg';
-import lookDayOutImg from '../assets/images/look_day_out_1789746210807.jpg';
-import lookPureMotionImg from '../assets/images/look_pure_motion_1789976686090.jpg';
-import lookSoftContrastImg from '../assets/images/look_soft_contrast_1789976647258.jpg';
-import lookBurgundyIceImg from '../assets/images/look_burgundy_ice_1789976666219.jpg';
-import lookMidnightBlueImg from '../assets/images/look_midnight_blue_1789976706414.jpg';
 import fabricImg from '../assets/images/fabric_details_1789643479673.jpg';
 import modelFitImg from '../assets/images/model_measurements_1789643490589.jpg';
 
-import regularJeansImg from '../assets/images/prod_regular_jeans_1789740087475.jpg';
-import wideLegJeansImg from '../assets/images/prod_wide_leg_jeans_1789740098242.jpg';
-import adidasSneakersImg from '../assets/images/prod_adidas_sneakers_1789740109474.jpg';
-import nikeSneakersImg from '../assets/images/prod_nike_sneakers_1789740121337.jpg';
+// Official Editorial Look Imagery (13 Photos for 7 Looks)
+export const LOOK_01_PURE_MOTION_PRIMARY = 'https://a.top4top.io/p_3918h8kns1.jpg'; // Photo 7
+export const LOOK_01_PURE_MOTION_SECONDARY = 'https://f.top4top.io/p_39189aaza1.jpg'; // Photo 10
+
+export const LOOK_02_URBAN_CORE_PRIMARY = 'https://j.top4top.io/p_3918lb4iz1.jpg'; // Photo 4
+export const LOOK_02_URBAN_CORE_SECONDARY = 'https://h.top4top.io/p_3918alhdt1.jpg'; // Photo 12
+
+export const LOOK_03_SOFT_CONTRAST_PRIMARY = 'https://l.top4top.io/p_3918lshbw1.jpg'; // Photo 6
+export const LOOK_03_SOFT_CONTRAST_SECONDARY = 'https://g.top4top.io/p_3918d2df41.jpg'; // Photo 11
+
+export const LOOK_04_STREET_FRAME_PRIMARY = 'https://g.top4top.io/p_3918nwq3z1.jpg'; // Photo 1
+export const LOOK_04_STREET_FRAME_SECONDARY = 'https://e.top4top.io/p_391846wtw1.jpg'; // Photo 9
+
+export const LOOK_05_BURGUNDY_NOIR_PRIMARY = 'https://k.top4top.io/p_3918vyytd1.jpg'; // Photo 5
+export const LOOK_05_BURGUNDY_NOIR_SECONDARY = 'https://d.top4top.io/p_39186bg2i1.jpg'; // Photo 8
+
+export const LOOK_06_MIDNIGHT_BLUE_PRIMARY = 'https://h.top4top.io/p_39182u2fp1.jpg'; // Photo 2
+export const LOOK_06_MIDNIGHT_BLUE_SECONDARY = 'https://i.top4top.io/p_39187s9pv1.jpg'; // Photo 13
+
+export const LOOK_07_BURGUNDY_ICE_PRIMARY = 'https://i.top4top.io/p_39182g38v1.jpg'; // Photo 3
 
 export const HERO_IMAGE = heroImg;
 export const FABRIC_IMAGE = fabricImg;
@@ -74,8 +91,8 @@ export const OUTFITS: Outfit[] = [
     description: 'أبيض مع لبني وأوف وايت — تركيبة نظيفة ومريحة للعين، من أول التيشيرت لحد الكوتشي.',
     descriptionText: 'أبيض مع لبني وأوف وايت — تركيبة نظيفة ومريحة للعين، من أول التيشيرت لحد الكوتشي.',
     story: 'الأبيض بيفتح الـLook، الـLight Blue بيكمل الإحساس الخفيف، والكوتشي بيربط اللونين مع بعض.',
-    image: lookPureMotionImg,
-    galleryImages: [lookPureMotionImg, heroImg, modelFitImg],
+    image: LOOK_01_PURE_MOTION_PRIMARY,
+    galleryImages: [LOOK_01_PURE_MOTION_PRIMARY, LOOK_01_PURE_MOTION_SECONDARY, heroImg, modelFitImg],
     totalPrice: 1669,
     separatePrice: 1819,
     savingsAmount: 150,
@@ -132,7 +149,7 @@ export const OUTFITS: Outfit[] = [
         sizes: ['41', '42', '43', '44', '45'],
         fabric: 'جلد مستورد درجة أولى',
         fit: 'تلبيس مظبوط',
-        image: nikeSneakersImg,
+        image: NIKE_OFFWHITE_BLUE_PRIMARY,
         availableColors: [
           { name: 'أوف وايت بتطعيم لبني', hex: '#DCE5EB' },
           { name: 'أوف وايت', hex: '#EDECE7' },
@@ -156,8 +173,8 @@ export const OUTFITS: Outfit[] = [
     description: 'أسود، رمادي، ودرجة رمادي أهدى في الكوتشي — Look بسيطة، بس مش عادية.',
     descriptionText: 'أسود، رمادي، ودرجة رمادي أهدى في الكوتشي — Look بسيطة، بس مش عادية.',
     story: 'أسود، رمادي، ودرجة رمادي أهدى في الكوتشي — الرمادي يربط التناسق ويدي تدرج متجانس ومريح.',
-    image: lookAfterDarkImg,
-    galleryImages: [lookAfterDarkImg, heroImg, modelFitImg],
+    image: LOOK_02_URBAN_CORE_PRIMARY,
+    galleryImages: [LOOK_02_URBAN_CORE_PRIMARY, LOOK_02_URBAN_CORE_SECONDARY, heroImg, modelFitImg],
     totalPrice: 1589,
     separatePrice: 1739,
     savingsAmount: 150,
@@ -216,7 +233,7 @@ export const OUTFITS: Outfit[] = [
         sizes: ['41', '42', '43', '44', '45'],
         fabric: 'جلد مستورد درجة أولى',
         fit: 'تلبيس مظبوط',
-        image: nikeSneakersImg,
+        image: NIKE_GREY_PRIMARY,
         availableColors: [
           { name: 'الرمادي', hex: '#7D8287' },
           { name: 'الأسود', hex: '#1C1C1C' },
@@ -240,8 +257,8 @@ export const OUTFITS: Outfit[] = [
     description: 'Pink يدي الـLook شخصيتها، Navy يثبتها، والأبيض يخلّيها نظيفة لآخر تفصيلة.',
     descriptionText: 'Pink يدي الـLook شخصيتها، Navy يثبتها، والأبيض يخلّيها نظيفة لآخر تفصيلة.',
     story: 'Pink يدي الـLook شخصيتها، Navy يثبتها، والأبيض يخلّيها نظيفة لآخر تفصيلة.',
-    image: lookSoftContrastImg,
-    galleryImages: [lookSoftContrastImg, heroImg, modelFitImg],
+    image: LOOK_03_SOFT_CONTRAST_PRIMARY,
+    galleryImages: [LOOK_03_SOFT_CONTRAST_PRIMARY, LOOK_03_SOFT_CONTRAST_SECONDARY, heroImg, modelFitImg],
     totalPrice: 1500,
     separatePrice: 1650,
     savingsAmount: 150,
@@ -322,8 +339,8 @@ export const OUTFITS: Outfit[] = [
     description: 'COURAGEOUS بالأسود تدخل بقوة، والـLight Blue Wide Leg يفتح الـLook، والأبيض يقفلها بنضافة.',
     descriptionText: 'COURAGEOUS بالأسود تدخل بقوة، والـLight Blue Wide Leg يفتح الـLook، والأبيض يقفلها بنضافة.',
     story: 'الـCOURAGEOUS هي نقطة التركيز. الـLight Blue يفتح الصورة، والأبيض ينهي الـLook بشكل أنضف.',
-    image: lookDayOutImg,
-    galleryImages: [lookDayOutImg, heroImg, modelFitImg],
+    image: LOOK_04_STREET_FRAME_PRIMARY,
+    galleryImages: [LOOK_04_STREET_FRAME_PRIMARY, LOOK_04_STREET_FRAME_SECONDARY, heroImg, modelFitImg],
     totalPrice: 1629,
     separatePrice: 1779,
     savingsAmount: 150,
@@ -401,8 +418,8 @@ export const OUTFITS: Outfit[] = [
     description: 'Burgundy عميق فوق Black Wide Leg وBlack Sneakers — Look غامقة، بس لون واحد كفاية يديها شخصيتها.',
     descriptionText: 'Burgundy عميق فوق Black Wide Leg وBlack Sneakers — Look غامقة، بس لون واحد كفاية يديها شخصيتها.',
     story: 'Burgundy عميق فوق Black Wide Leg وBlack Sneakers — Look غامقة، بس لون واحد كفاية يديها شخصيتها.',
-    image: lookAfterClassImg,
-    galleryImages: [lookAfterClassImg, heroImg, modelFitImg],
+    image: LOOK_05_BURGUNDY_NOIR_PRIMARY,
+    galleryImages: [LOOK_05_BURGUNDY_NOIR_PRIMARY, LOOK_05_BURGUNDY_NOIR_SECONDARY, heroImg, modelFitImg],
     totalPrice: 1718,
     separatePrice: 1868,
     savingsAmount: 150,
@@ -458,7 +475,7 @@ export const OUTFITS: Outfit[] = [
         sizes: ['41', '42', '43', '44', '45'],
         fabric: 'جلد مستورد درجة أولى',
         fit: 'تلبيس مظبوط',
-        image: nikeSneakersImg,
+        image: NIKE_BLACK_PRIMARY,
         availableColors: [
           { name: 'الأسود', hex: '#1C1C1C' },
           { name: 'أوف وايت', hex: '#EDECE7' },
@@ -482,8 +499,8 @@ export const OUTFITS: Outfit[] = [
     description: 'White COURAGEOUS فوق Navy، وOff-white تحت — Contrast واضح، بس بإحساس أهدى.',
     descriptionText: 'White COURAGEOUS فوق Navy، وOff-white تحت — Contrast واضح، بس بإحساس أهدى.',
     story: 'White COURAGEOUS فوق Navy، وOff-white تحت — Contrast واضح، بس بإحساس أهدى.',
-    image: lookMidnightBlueImg,
-    galleryImages: [lookMidnightBlueImg, heroImg, modelFitImg],
+    image: LOOK_06_MIDNIGHT_BLUE_PRIMARY,
+    galleryImages: [LOOK_06_MIDNIGHT_BLUE_PRIMARY, LOOK_06_MIDNIGHT_BLUE_SECONDARY, heroImg, modelFitImg],
     totalPrice: 1638,
     separatePrice: 1788,
     savingsAmount: 150,
@@ -541,7 +558,7 @@ export const OUTFITS: Outfit[] = [
         sizes: ['41', '42', '43', '44', '45'],
         fabric: 'جلد مستورد درجة أولى',
         fit: 'تلبيس مظبوط',
-        image: nikeSneakersImg,
+        image: NIKE_OFFWHITE_PRIMARY,
         availableColors: [
           { name: 'أوف وايت', hex: '#EDECE7' },
           { name: 'أوف وايت بتطعيم لبني', hex: '#DCE5EB' },
@@ -565,8 +582,8 @@ export const OUTFITS: Outfit[] = [
     description: 'Burgundy فوق Light Blue، والكوتشي بيربط اللونين — Contrast واضح، بس النتيجة متوازنة.',
     descriptionText: 'Burgundy فوق Light Blue، والكوتشي بيربط اللونين — Contrast واضح، بس النتيجة متوازنة.',
     story: 'Burgundy لون دافي، وLight Blue لون بارد. الاختلاف بينهم هو اللي بيدي الـLook شخصيتها، والكوتشي بيربطهم.',
-    image: lookBurgundyIceImg,
-    galleryImages: [lookBurgundyIceImg, heroImg, modelFitImg],
+    image: LOOK_07_BURGUNDY_ICE_PRIMARY,
+    galleryImages: [LOOK_07_BURGUNDY_ICE_PRIMARY, heroImg, modelFitImg],
     totalPrice: 1669,
     separatePrice: 1819,
     savingsAmount: 150,
@@ -623,7 +640,7 @@ export const OUTFITS: Outfit[] = [
         sizes: ['41', '42', '43', '44', '45'],
         fabric: 'جلد مستورد درجة أولى',
         fit: 'تلبيس مظبوط',
-        image: nikeSneakersImg,
+        image: NIKE_OFFWHITE_BLUE_PRIMARY,
         availableColors: [
           { name: 'أوف وايت بتطعيم لبني', hex: '#DCE5EB' },
           { name: 'أوف وايت', hex: '#EDECE7' },
@@ -876,6 +893,7 @@ export const AVAILABLE_PIECES = {
       sizes: ['41', '42', '43', '44', '45'],
       fabric: 'جلد مستورد درجة أولى',
       fit: 'تلبيس مظبوط',
+      image: NIKE_OFFWHITE_PRIMARY,
     },
     {
       id: 'guide-nike-black',
@@ -888,6 +906,7 @@ export const AVAILABLE_PIECES = {
       sizes: ['41', '42', '43', '44', '45'],
       fabric: 'جلد مستورد درجة أولى',
       fit: 'تلبيس مظبوط',
+      image: NIKE_BLACK_PRIMARY,
     },
     {
       id: 'guide-nike-grey',
@@ -900,6 +919,7 @@ export const AVAILABLE_PIECES = {
       sizes: ['41', '42', '43', '44', '45'],
       fabric: 'جلد مستورد درجة أولى',
       fit: 'تلبيس مظبوط',
+      image: NIKE_GREY_PRIMARY,
     },
     {
       id: 'guide-nike-offwhite-blue',
@@ -912,6 +932,7 @@ export const AVAILABLE_PIECES = {
       sizes: ['41', '42', '43', '44', '45'],
       fabric: 'جلد مستورد درجة أولى',
       fit: 'تلبيس مظبوط',
+      image: NIKE_OFFWHITE_BLUE_PRIMARY,
     },
   ],
 };

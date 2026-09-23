@@ -40,13 +40,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       id={`product-card-${product.id}`}
-      className="group relative bg-[#FFFFFF] rounded-[20px] border border-[#C8C8C6] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden p-4 sm:p-5 hover:-translate-y-0.5 text-right"
+      className="group relative bg-[#FFFFFF] rounded-2xl border border-[#C8C8C6] shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden p-4 sm:p-5 hover:-translate-y-0.5 text-right"
     >
       <div>
         {/* Product Image Frame (Consistent 3:4 Aspect Ratio) */}
         <div
           onClick={handleOpen}
-          className="relative w-full aspect-[3/4] rounded-[14px] bg-[#EAEAEA]/30 overflow-hidden mb-4 cursor-pointer border border-[#C8C8C6]/40"
+          className="relative w-full aspect-[3/4] rounded-xl bg-[#EAEAEA]/30 overflow-hidden mb-3.5 cursor-pointer border border-[#C8C8C6]/40"
         >
           <img
             src={displayImage}
@@ -58,17 +58,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* Fit and Summer badge on top corner */}
           <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
-            <span className="px-2 py-0.5 rounded-[5px] bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono font-bold tracking-wider shadow-sm">
+            <span className="px-2 py-0.5 rounded-md bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono font-bold tracking-wider shadow-sm uppercase">
               ☀ SUMMER
             </span>
-            <span className="px-2 py-0.5 rounded-[5px] bg-[#FFFFFF]/95 backdrop-blur-sm text-[#1C1C1C] text-[10px] font-bold font-mono tracking-wide shadow-sm border border-black/10">
+            <span className="px-2 py-0.5 rounded-md bg-[#FFFFFF]/95 backdrop-blur-sm text-[#1C1C1C] text-[10px] font-bold font-mono tracking-wide shadow-sm border border-black/10">
               {product.fit}
             </span>
           </div>
         </div>
 
         {/* Product Identity */}
-        <div className="space-y-1.5 mb-3">
+        <div className="space-y-1 mb-3">
           <div className="flex items-start justify-between gap-2">
             <h3
               onClick={() => onOpenDetails(product, activeColor)}
@@ -81,14 +81,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
 
-          <p className="text-xs sm:text-[13px] text-[#1C1C1C]/75 leading-relaxed">
+          <p className="text-xs text-[#555555] leading-relaxed">
             {product.cardShortCopy}
           </p>
         </div>
 
         {/* Available Colors with Interactive Color Swatches */}
         <div className="mb-3.5 pt-2 border-t border-[#C8C8C6]/40">
-          <div className="flex items-center justify-between text-[11px] mb-2 text-[#AFAFAD]">
+          <div className="flex items-center justify-between text-xs mb-1.5 text-[#777777]">
             <span className="font-medium text-[#1C1C1C]">الألوان المتاحة:</span>
             <span className="font-medium text-[#1C1C1C]">{activeColor}</span>
           </div>
@@ -112,7 +112,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   style={{ backgroundColor: col.hex }}
                   aria-label={col.name}
                 >
-                  {/* Subtle white/dark inner dot if selected for clear accessibility */}
                   {isSelected && (
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${
@@ -127,32 +126,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             })}
           </div>
         </div>
-
-        {/* Available Sizes List */}
-        <div className="mb-4">
-          <div className="text-[11px] text-[#AFAFAD] mb-1.5">المقاسات:</div>
-          <div className="flex flex-wrap gap-1">
-            {product.sizes.map((sz) => (
-              <span
-                key={sz}
-                className="px-2 py-0.5 rounded-[6px] bg-[#1C1C1C]/[0.04] border border-[#C8C8C6]/60 text-[11px] font-mono font-bold text-[#1C1C1C]"
-              >
-                {sz}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
 
-      {/* Card Action Button */}
-      <button
-        onClick={handleOpen}
-        className="w-full mt-2 h-[42px] rounded-[10px] bg-[#1C1C1C] text-[#FFFFFF] font-bold text-xs sm:text-[13px] hover:bg-[#2A2A2A] transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-        id={`view-details-${product.id}`}
-      >
-        <span>شوف التفاصيل</span>
-        <ArrowLeft className="w-3.5 h-3.5 text-[#FFFFFF]" />
-      </button>
+      {/* Footer Specs & Action CTA */}
+      <div className="pt-3 border-t border-[#C8C8C6]/40 flex items-center justify-between gap-2">
+        <span className="text-[11px] text-[#777777] font-medium truncate">
+          {product.fabricComposition || product.fabric}
+        </span>
+
+        <button
+          onClick={handleOpen}
+          className="inline-flex items-center gap-1 text-xs font-bold text-[#1C1C1C] hover:bg-[#1C1C1C]/5 py-1.5 px-3 rounded-lg transition-colors cursor-pointer shrink-0"
+          id={`view-details-${product.id}`}
+        >
+          <span>التفاصيل</span>
+          <ArrowLeft className="w-3.5 h-3.5 text-[#1C1C1C] transition-transform group-hover:-translate-x-0.5" />
+        </button>
+      </div>
     </div>
   );
 };

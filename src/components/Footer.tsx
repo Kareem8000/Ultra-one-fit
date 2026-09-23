@@ -73,153 +73,102 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       id="main-footer"
-      className="bg-[#1C1C1C] text-[#EAEAEA] pt-16 pb-12 border-t border-[#C8C8C6]/15"
+      className="bg-[#1C1C1C] text-[#EAEAEA] pt-12 sm:pt-16 pb-28 sm:pb-16 border-t border-[#C8C8C6]/15"
+      dir="rtl"
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#C8C8C6]/15 text-right">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-[#C8C8C6]/15 text-right">
           
           {/* Brand Column (5 cols) */}
           <div className="md:col-span-5">
-            <div className="flex flex-col mb-4">
-              <span className="font-black text-2xl tracking-tight text-[#FFFFFF] uppercase">
+            <div className="flex flex-col mb-3">
+              <span className="font-black text-xl sm:text-2xl tracking-tight text-[#FFFFFF] uppercase">
                 Ultra One Fit
               </span>
               <div
                 dir="ltr"
-                className="flex items-center gap-1.5 text-[10.5px] tracking-wider text-[#AFAFAD] uppercase mt-0.5 font-medium select-none"
+                className="flex items-center gap-1.5 text-[10px] tracking-wider text-[#AFAFAD] uppercase mt-0.5 font-medium select-none"
               >
                 <span>3 pieces</span>
                 <span className="text-[#C8C8C6]/60 font-black">•</span>
                 <span>1 outfit</span>
               </div>
             </div>
-            <p className="text-sm text-[#C8C8C6] leading-relaxed max-w-[340px] mb-6">
-              Outfits متناسقة، عشان اختيار لبسك يبقى أسهل.
+            <p className="text-xs sm:text-sm text-[#C8C8C6] leading-relaxed max-w-[340px] mb-4">
+              Outfits متناسقة جاهزة، عشان اختيار لبسك يبقى أسهل.
             </p>
 
             {/* Essential Brand Shipping & Policy notes */}
-            <div className="space-y-2 text-xs text-[#AFAFAD]">
+            <div className="space-y-1.5 text-xs text-[#AFAFAD]">
               <p>شحن القاهرة والجيزة: 80 جنيه • التوصيل خلال 3–4 أيام عمل</p>
               <p>ضمان لمدة عام كامل على بنطلونات الجينز ضد عيوب الصناعة</p>
               <p>الاستبدال متاح خلال 14 يوم بحالته الأصلية</p>
               <p>الدفع عند الاستلام نقداً بعد المعاينة والفحص</p>
             </div>
+          </div>
 
-            {/* Direct Order CTA in Footer */}
-            <div className="mt-6">
+          {/* Navigation Links Column (4 cols) */}
+          <div className="md:col-span-4">
+            <span className="text-xs font-mono font-bold tracking-wider text-[#FFFFFF] uppercase block mb-3">
+              الأقسام الرئيسية
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {navItems.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={item.action}
+                  className="text-right text-[#C8C8C6] hover:text-[#FFFFFF] py-1 transition-colors focus:outline-none cursor-pointer"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Customer Tools & Legal (3 cols) */}
+          <div className="md:col-span-3">
+            <span className="text-xs font-mono font-bold tracking-wider text-[#FFFFFF] uppercase block mb-3">
+              أدوات وتفاصيل
+            </span>
+            <div className="flex flex-col gap-2 text-xs text-[#C8C8C6]">
               <button
-                onClick={onScrollToOrderSection}
-                className="h-[38px] px-5 rounded-[8px] bg-[#FFFFFF] text-[#1C1C1C] font-extrabold text-xs hover:bg-[#EAEAEA] transition-all duration-200 shadow-sm flex items-center gap-2 focus:outline-none hover:-translate-y-0.5 active:translate-y-0"
+                onClick={onOpenSizeChart}
+                className="text-right hover:text-[#FFFFFF] transition-colors focus:outline-none cursor-pointer"
               >
-                <span>اطلب الـ Outfit الآن</span>
-                <span>←</span>
+                جدول المقاسات بالسنتيمتر
+              </button>
+              <button
+                onClick={onOpenGuide}
+                className="text-right hover:text-[#FFFFFF] transition-colors focus:outline-none cursor-pointer"
+              >
+                دليل الـOutfits المعتمد
+              </button>
+              <button
+                onClick={onOpenTerms}
+                className="text-right hover:text-[#FFFFFF] transition-colors focus:outline-none cursor-pointer"
+              >
+                الشروط والأحكام
+              </button>
+              <button
+                onClick={onOpenPrivacy}
+                className="text-right hover:text-[#FFFFFF] transition-colors focus:outline-none cursor-pointer"
+              >
+                سياسة الخصوصية
               </button>
             </div>
           </div>
 
-          {/* Navigation Column (Matching Bar) (3 cols) */}
-          <div className="md:col-span-3">
-            <h3 className="text-xs font-bold font-mono text-[#AFAFAD] uppercase tracking-wider mb-4">
-              الأقسام الرئيسية
-            </h3>
-            <ul className="space-y-3 text-sm text-[#C8C8C6]">
-              {navItems.map((item, idx) => (
-                <li key={idx}>
-                  <button
-                    onClick={item.action}
-                    className="hover:text-[#FFFFFF] transition-colors focus:outline-none"
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support & Services Column (4 cols) */}
-          <div className="md:col-span-4">
-            <h3 className="text-xs font-bold font-mono text-[#AFAFAD] uppercase tracking-wider mb-4">
-              المساعدة والخدمات
-            </h3>
-            <ul className="space-y-3 text-sm text-[#C8C8C6]">
-              <li>
-                <button
-                  onClick={onOpenSizeChart}
-                  className="hover:text-[#FFFFFF] transition-colors focus:outline-none flex items-center gap-1.5"
-                >
-                  <span>جدول القياسات الدقيق بالسنتيمتر</span>
-                  <span className="text-[10px] text-[#AFAFAD]">(المقاسات)</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={onOpenGuide}
-                  className="hover:text-[#FFFFFF] transition-colors focus:outline-none flex items-center gap-1.5"
-                >
-                  <span>دليل تنسيق الـ Outfit Guide</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToElement('faq-section')}
-                  className="hover:text-[#FFFFFF] transition-colors focus:outline-none"
-                >
-                  الشحن والتوصيل (القاهرة 80 جنيه • 3–4 أيام)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={onOpenTerms}
-                  className="hover:text-[#FFFFFF] transition-colors focus:outline-none"
-                >
-                  سياسة الاستبدال (متاح خلال 14 يوم)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToElement('faq-section')}
-                  className="hover:text-[#FFFFFF] transition-colors focus:outline-none"
-                >
-                  خيارات الدفع (استلام أو Vodafone Cash)
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToElement('dedicated-pricing-section')}
-                  className="hover:text-[#FFFFFF] transition-colors focus:outline-none"
-                >
-                  تفاصيل طلب واستلام الـ Outfit
-                </button>
-              </li>
-            </ul>
-          </div>
-
         </div>
 
-        {/* Bottom Legal Row */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#AFAFAD]">
-          <div>
-            © Ultra One Fit — All Rights Reserved
-          </div>
-
-          <div className="flex items-center gap-6">
-            <button
-              onClick={onOpenPrivacy}
-              className="hover:text-[#FFFFFF] transition-colors focus:outline-none underline-offset-4 hover:underline"
-              id="footer-privacy-btn"
-            >
-              سياسة الخصوصية
-            </button>
-            <span className="text-[#C8C8C6]/30">•</span>
-            <button
-              onClick={onOpenTerms}
-              className="hover:text-[#FFFFFF] transition-colors focus:outline-none underline-offset-4 hover:underline"
-              id="footer-terms-btn"
-            >
-              الشروط والأحكام وسياسة الاستخدام
-            </button>
+        {/* Bottom Bar: Copyright */}
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#AFAFAD]">
+          <p>© {new Date().getFullYear()} Ultra One Fit. جميع الحقوق محفوظة — براند أزياء رجالي مصري.</p>
+          <div className="flex items-center gap-4 text-[11px]">
+            <span>القاهرة، جمهورية مصر العربية</span>
+            <span>•</span>
+            <span className="font-mono">Summer 2026 Collection</span>
           </div>
         </div>
 

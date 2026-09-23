@@ -55,27 +55,27 @@ export const ProblemSection: React.FC = () => {
   return (
     <section
       id="problem-section"
-      className="bg-[#FFFFFF] text-[#1C1C1C] py-16 sm:py-20 lg:py-24 border-b border-[#C8C8C6]/30"
+      className="bg-[#FFFFFF] text-[#1C1C1C] py-12 sm:py-16 md:py-20 border-b border-[#C8C8C6]/30"
       dir="rtl"
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
           
-          {/* Right Column (Desktop 5 cols): Section Identity & Supporting Intro */}
+          {/* Right Column: Section Headline & Intro */}
           <div className="lg:col-span-5 lg:sticky lg:top-24 text-right flex flex-col items-start">
             
-            {/* 04 — MAIN SECTION BADGE */}
+            {/* Badge */}
             <div
               id="problem-badge"
-              className="inline-flex items-center px-3 py-1 rounded-[8px] bg-[#1C1C1C] text-[#FFFFFF] text-xs font-semibold tracking-wide mb-4 shadow-sm"
+              className="inline-flex items-center px-3 py-1 rounded-lg bg-[#1C1C1C] text-[#FFFFFF] text-xs font-bold tracking-wide mb-3 sm:mb-4 shadow-sm"
             >
               <span>المشكلة مش في القطعة</span>
             </div>
 
-            {/* 05 — MAIN HEADLINE (Look is masculine: Look حلو) */}
+            {/* Headline */}
             <h2
               id="problem-headline"
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-[34px] xl:text-[38px] font-bold text-[#1C1C1C] leading-[1.3] sm:leading-[1.25] tracking-tight mb-5"
+              className="text-2xl min-[400px]:text-3xl sm:text-4xl font-black text-[#1C1C1C] leading-[1.3] sm:leading-[1.25] tracking-tight mb-4"
             >
               <span className="block text-[#1C1C1C]">
                 مشكلتك مش إنك مش لاقي هدوم حلوة…
@@ -89,56 +89,52 @@ export const ProblemSection: React.FC = () => {
               </span>
             </h2>
 
-            {/* 06 — SUPPORTING INTRO */}
+            {/* Intro */}
             <p
               id="problem-intro"
-              className="text-sm sm:text-base text-[#1C1C1C]/80 leading-relaxed mb-6 font-normal"
+              className="text-xs min-[400px]:text-sm sm:text-base text-[#1C1C1C]/80 leading-relaxed mb-5 font-normal"
             >
-              ممكن تلاقي تيشيرت عاجبك جدًا.
-              <br className="hidden sm:inline" />
-              بس أول سؤال بييجي بعده: هلبسه على إيه؟
+              ممكن تلاقي تيشيرت عاجبك جدًا. بس أول سؤال بييجي بعده: هلبسه على إيه؟
             </p>
 
-            {/* 07 — QUICK SUMMARY (3 POINTS) */}
+            {/* Quick Summary */}
             <div
               id="problem-quick-summary"
-              className="space-y-3 mb-6 w-full pt-2 border-t border-[#C8C8C6]/40"
+              className="space-y-2.5 mb-6 w-full pt-3 border-t border-[#C8C8C6]/40"
             >
               {summaryPoints.map((point, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#1C1C1C]/85 font-medium">
-                  <span className="w-2 h-2 rounded-full bg-[#1C1C1C] mt-1.5 shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1C1C1C] mt-2 shrink-0" />
                   <span>{point}</span>
                 </div>
               ))}
             </div>
 
-            {/* Visual reassurance anchor on desktop */}
             <div className="hidden lg:block pt-3 border-t border-[#C8C8C6]/20 w-full text-xs text-[#AFAFAD]">
               Ultra One Fit • تفكيرك في اللبس بيبدأ من النتيجة النهائية
             </div>
           </div>
 
-          {/* Left Column (Desktop 7 cols): 7 Editorial Information Cards */}
-          <div className="lg:col-span-7 flex flex-col gap-3.5 sm:gap-4 text-right">
+          {/* Left Column: 7 Thought Cards */}
+          <div className="lg:col-span-7 flex flex-col gap-3 sm:gap-3.5 text-right">
             {thoughtCards.map((card) => {
               if (card.highlight) {
-                // Card 07: Reframe & Bridge card (Distinctive emphasis without being a CTA)
                 return (
                   <div
                     key={card.num}
                     id={`problem-card-${card.num}`}
-                    className="p-5 sm:p-6 rounded-[18px] sm:rounded-[20px] bg-[#1C1C1C]/[0.03] border-2 border-[#1C1C1C] shadow-[0_4px_20px_rgba(28,28,28,0.06)] hover:-translate-y-0.5 transition-all duration-200"
+                    className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-[#1C1C1C]/[0.03] border-2 border-[#1C1C1C] shadow-sm transition-all"
                   >
-                    <div className="flex items-baseline justify-between mb-2">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="font-mono text-xs sm:text-sm font-black text-[#1C1C1C] tracking-wider">
                         {card.num}
                       </span>
-                      <span className="text-[10px] font-bold tracking-widest text-[#1C1C1C] uppercase px-2 py-0.5 rounded-[6px] bg-[#1C1C1C]/10">
+                      <span className="text-[10px] font-bold tracking-widest text-[#1C1C1C] uppercase px-2 py-0.5 rounded-md bg-[#1C1C1C]/10">
                         المدخل للحل
                       </span>
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-bold text-[#1C1C1C] mb-2 leading-snug">
+                    <h3 className="text-sm sm:text-base font-bold text-[#1C1C1C] mb-1.5 leading-snug">
                       {card.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-[#1C1C1C]/85 leading-relaxed">
@@ -148,42 +144,41 @@ export const ProblemSection: React.FC = () => {
                 );
               }
 
-              // Standard Cards 01 to 06
               return (
                 <div
                   key={card.num}
                   id={`problem-card-${card.num}`}
-                  className="p-4 sm:p-5 rounded-[18px] sm:rounded-[20px] bg-[#FFFFFF] border border-[#C8C8C6]/70 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:-translate-y-0.5 hover:border-[#1C1C1C]/50 transition-all duration-200"
+                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#FFFFFF] border border-[#C8C8C6]/60 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:border-[#1C1C1C]/50 transition-all"
                 >
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center justify-between mb-1">
                     <span className="font-mono text-xs font-bold text-[#AFAFAD] tracking-wider">
                       {card.num}
                     </span>
                   </div>
 
-                  <h3 className="text-sm sm:text-base font-bold text-[#1C1C1C] mb-1.5 leading-snug">
+                  <h3 className="text-xs min-[400px]:text-sm sm:text-base font-bold text-[#1C1C1C] mb-1 leading-snug">
                     {card.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#1C1C1C]/75 leading-relaxed">
+                  <p className="text-[11px] min-[400px]:text-xs sm:text-sm text-[#1C1C1C]/75 leading-relaxed">
                     {card.desc}
                   </p>
                 </div>
               );
             })}
 
-            {/* 26 — STRATEGIC TRANSITION LINE (Natural bridge to the solution section) */}
+            {/* Strategic Transition Bridge */}
             <button
               onClick={() => {
                 const el = document.getElementById('solution-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
               id="problem-transition-bridge"
-              className="mt-4 pt-4 border-t border-[#C8C8C6]/40 flex items-center justify-between text-right px-2 w-full group hover:text-[#1C1C1C] transition-colors focus:outline-none"
+              className="mt-3 pt-3 border-t border-[#C8C8C6]/40 flex items-center justify-between text-right px-1 w-full group hover:text-[#1C1C1C] transition-colors focus:outline-none cursor-pointer"
             >
-              <p className="text-sm sm:text-base font-bold text-[#1C1C1C] group-hover:underline">
+              <p className="text-xs sm:text-sm font-bold text-[#1C1C1C] group-hover:underline">
                 وعشان كده… إحنا بنبدأ من الـLook.
               </p>
-              <span className="text-xs font-medium text-[#AFAFAD] group-hover:text-[#1C1C1C] transition-colors flex items-center gap-1">
+              <span className="text-xs font-bold text-[#1C1C1C] flex items-center gap-1">
                 <span>شوف الحل</span>
                 <span className="group-hover:-translate-x-1 transition-transform">←</span>
               </span>

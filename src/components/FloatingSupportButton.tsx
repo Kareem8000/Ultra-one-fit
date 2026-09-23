@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, ArrowLeft, X } from 'lucide-react';
+import { MessageCircle, X } from 'lucide-react';
 
 interface FloatingSupportButtonProps {
   onScrollToFaq: () => void;
@@ -18,16 +18,17 @@ export const FloatingSupportButton: React.FC<FloatingSupportButtonProps> = ({
   return (
     <div
       id="floating-support-action"
-      className="fixed bottom-[76px] sm:bottom-[16px] left-3 sm:left-6 z-40"
+      className="fixed bottom-[74px] sm:bottom-5 left-3 sm:left-6 z-40"
+      dir="rtl"
     >
-      {/* Mini Tooltip on Hover/Tap */}
+      {/* Mini Tooltip */}
       {tooltipOpen && (
-        <div className="absolute bottom-[66px] left-0 w-[240px] p-3 rounded-[12px] bg-[#1C1C1C] border border-[#C8C8C6]/30 text-[#FFFFFF] shadow-2xl text-right animate-in fade-in duration-200">
+        <div className="absolute bottom-[56px] left-0 w-[240px] p-3 rounded-2xl bg-[#1C1C1C] border border-[#C8C8C6]/30 text-[#FFFFFF] shadow-2xl text-right animate-in fade-in duration-200">
           <div className="flex items-center justify-between mb-1 pb-1 border-b border-[#C8C8C6]/20">
             <span className="text-[11px] font-bold text-[#EAEAEA]">خدمة العملاء (واتساب)</span>
             <button
               onClick={() => setTooltipOpen(false)}
-              className="text-[#AFAFAD] hover:text-[#FFFFFF]"
+              className="text-[#AFAFAD] hover:text-[#FFFFFF] cursor-pointer"
               aria-label="إغلاق"
             >
               <X className="w-3.5 h-3.5" />
@@ -39,7 +40,7 @@ export const FloatingSupportButton: React.FC<FloatingSupportButtonProps> = ({
           <div className="flex flex-col gap-1.5">
             <button
               onClick={handleWhatsAppClick}
-              className="w-full py-1.5 px-2 rounded-[6px] bg-[#FFFFFF] text-[#1C1C1C] font-bold text-[10px] flex items-center justify-center gap-1.5 hover:bg-[#EAEAEA]"
+              className="w-full py-1.5 px-2 rounded-lg bg-[#FFFFFF] text-[#1C1C1C] font-bold text-[10px] flex items-center justify-center gap-1.5 hover:bg-[#EAEAEA] cursor-pointer"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>محادثة واتساب فورية</span>
@@ -49,7 +50,7 @@ export const FloatingSupportButton: React.FC<FloatingSupportButtonProps> = ({
                 setTooltipOpen(false);
                 onScrollToFaq();
               }}
-              className="w-full py-1 px-2 rounded-[6px] text-[#C8C8C6] hover:text-[#FFFFFF] text-[10px] text-center"
+              className="w-full py-1 px-2 rounded-lg text-[#C8C8C6] hover:text-[#FFFFFF] text-[10px] text-center cursor-pointer"
             >
               أو شوف الأسئلة الشائعة
             </button>
@@ -60,12 +61,11 @@ export const FloatingSupportButton: React.FC<FloatingSupportButtonProps> = ({
       {/* Floating Black WhatsApp Button */}
       <button
         onClick={() => setTooltipOpen(!tooltipOpen)}
-        className="w-[52px] h-[52px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#1C1C1C] text-[#FFFFFF] border border-[#C8C8C6]/40 shadow-[0_8px_24px_rgba(0,0,0,0.6)] flex items-center justify-center hover:bg-[#2A2A2A] hover:border-[#FFFFFF]/60 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none group"
-        aria-label="تواصل معنا واتساب"
-        title="تواصل معنا واتساب"
-        id="support-fab-btn"
+        className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#1C1C1C] text-[#FFFFFF] border border-[#C8C8C6]/40 shadow-xl flex items-center justify-center hover:bg-[#000000] hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none cursor-pointer"
+        aria-label="تواصل مع خدمة العملاء"
+        title="خدمة العملاء واتساب"
       >
-        <MessageCircle className="w-6 h-6 text-[#FFFFFF] group-hover:scale-110 transition-transform" />
+        <MessageCircle className="w-5 h-5 text-[#FFFFFF]" />
       </button>
     </div>
   );

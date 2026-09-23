@@ -198,28 +198,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   };
 
   return (
-    <div className="bg-[#FFFFFF] text-[#1C1C1C] min-h-screen pt-24 sm:pt-28 pb-10 sm:pb-14 px-3 sm:px-6">
-      <div className="max-w-[1180px] mx-auto">
+    <div className="bg-[#FFFFFF] text-[#1C1C1C] min-h-screen pt-20 sm:pt-24 pb-14 sm:pb-20 px-4 sm:px-6 lg:px-8" dir="rtl">
+      <div className="max-w-[1200px] mx-auto">
         {/* Top Breadcrumbs & Back Navigation */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#C8C8C6]/50">
+        <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#C8C8C6]/50">
           <button
             onClick={onBackToProducts}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#1C1C1C] hover:text-[#1C1C1C]/70 transition-colors focus:outline-none py-1"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#1C1C1C] hover:opacity-75 transition-opacity py-1 cursor-pointer"
             id="back-to-products-btn"
           >
             <ArrowRight className="w-4 h-4 text-[#1C1C1C]" />
             <span>الرجوع للمنتجات</span>
           </button>
 
-          <div className="text-[11px] sm:text-xs text-[#AFAFAD] flex items-center gap-1.5 font-medium">
-            <span>المنتجات</span>
-            <span>/</span>
-            <span className="text-[#1C1C1C] font-semibold">{product.type}</span>
+          <div className="text-xs font-mono font-bold text-[#777777] flex items-center gap-1.5">
+            <span className="hidden sm:inline">المنتجات الرسمية</span>
+            <span className="hidden sm:inline">•</span>
+            <span className="text-[#1C1C1C] font-sans font-black">{product.type}</span>
           </div>
         </div>
 
         {/* Main Product Layout (Desktop: Left Gallery, Right Details | Mobile: Gallery First) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
           
           {/* Left Column (Desktop) / First Column: Large Product Gallery with Auto-Flip Carousel */}
           <div className="lg:col-span-6 space-y-3.5">
@@ -383,21 +383,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             )}
 
             {/* Reassurance Badges */}
-            <div className="grid grid-cols-3 gap-2.5 p-3 rounded-[14px] bg-[#1C1C1C]/[0.03] border border-[#C8C8C6]/60 text-center text-xs text-[#1C1C1C]">
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2 p-3 rounded-xl bg-[#1C1C1C]/[0.03] border border-[#C8C8C6]/60 text-center text-xs text-[#1C1C1C]">
               <div className="flex flex-col items-center gap-1 p-1">
                 <Truck className="w-4 h-4 text-[#1C1C1C]" />
                 <span className="font-bold text-[11px]">شحن القاهرة والجيزة</span>
-                <span className="text-[10px] text-[#AFAFAD]">80 جنيه (3-4 أيام)</span>
+                <span className="text-[10px] text-[#777777]">80 جنيه (3-4 أيام)</span>
               </div>
-              <div className="flex flex-col items-center gap-1 p-1 border-x border-[#C8C8C6]/50">
+              <div className="flex flex-col items-center gap-1 p-1 min-[420px]:border-x min-[420px]:border-[#C8C8C6]/50">
                 <RotateCcw className="w-4 h-4 text-[#1C1C1C]" />
                 <span className="font-bold text-[11px]">استبدال 14 يوم</span>
-                <span className="text-[10px] text-[#AFAFAD]">بشروط الحالة الأصلية</span>
+                <span className="text-[10px] text-[#777777]">بشروط الحالة الأصلية</span>
               </div>
               <div className="flex flex-col items-center gap-1 p-1">
                 <ShieldCheck className="w-4 h-4 text-[#1C1C1C]" />
                 <span className="font-bold text-[11px]">دفع عند الاستلام</span>
-                <span className="text-[10px] text-[#AFAFAD]">نقداً بعد المعاينة</span>
+                <span className="text-[10px] text-[#777777]">نقداً بعد المعاينة</span>
               </div>
             </div>
           </div>
@@ -408,10 +408,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             {/* Header Identity & Price */}
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono font-bold tracking-wider shrink-0">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#1C1C1C] text-[#FFFFFF] text-[10px] font-mono font-black tracking-wider uppercase shrink-0">
                   ☀ SUMMER CLEARANCE
                 </span>
-                <span className="text-xs font-mono text-[#AFAFAD] uppercase tracking-wider">
+                <span className="text-xs font-mono text-[#777777] uppercase tracking-wider">
                   ULTRA ONE FIT • {product.type}
                 </span>
               </div>
@@ -429,8 +429,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </span>
                   <span className="text-sm font-bold text-[#1C1C1C]">جنيه مصري</span>
                 </div>
-                <span className="text-[11px] text-[#777777]">
-                  السعر الرسمي للقطعة في تصفيات الصيف • وفّر 150 ج.م عند طلب الـLook كاملة
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded inline-block self-start mt-1">
+                  وفّر 150 ج.م عند طلب الـLook كاملة
                 </span>
               </div>
             </div>

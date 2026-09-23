@@ -310,10 +310,12 @@ const AppContent: React.FC = () => {
         {currentView === 'look-detail' && selectedOutfit && (
           <LookDetailPage
             outfit={selectedOutfit}
+            otherOutfits={OUTFITS.filter((o) => o.id !== selectedOutfit.id)}
             onBackToOutfits={handleNavigateToOutfits}
             onOpenSizeChart={handleOpenSizeChart}
             onOpenProductDetails={handleOpenProductDetails}
             onSelectOtherOutfit={handleSelectOutfit}
+            onOpenCheckout={() => setCartCheckoutModalOpen(true)}
           />
         )}
 

@@ -3,7 +3,6 @@ import { CatalogProduct } from '../types';
 import regularJeansImg from '../assets/images/prod_regular_jeans_1789740087475.jpg';
 import wideLegJeansImg from '../assets/images/prod_wide_leg_jeans_1789740098242.jpg';
 import adidasSneakersImg from '../assets/images/prod_adidas_sneakers_1789740109474.jpg';
-import nikeSneakersImg from '../assets/images/prod_nike_sneakers_1789740121337.jpg';
 
 export const COURAGEOUS_BLACK_IMAGES: string[] = [
   'https://f.top4top.io/p_3917htmgj1.png',
@@ -156,6 +155,42 @@ export const ADIDAS_BLACK_IMAGES: string[] = [
 export const ADIDAS_ALL_IMAGES: string[] = [
   ...ADIDAS_WHITE_IMAGES,
   ...ADIDAS_BLACK_IMAGES,
+];
+
+// New Nike Sneakers Official Product Imagery
+export const NIKE_OFFWHITE_BLUE_PRIMARY = 'https://k.top4top.io/p_39185msxp1.jpg'; // Photo 2
+export const NIKE_OFFWHITE_BLUE_DETAIL = 'https://l.top4top.io/p_3918hdvze1.jpg';  // Photo 6
+export const NIKE_OFFWHITE_BLUE_IMAGES: string[] = [
+  NIKE_OFFWHITE_BLUE_PRIMARY,
+  NIKE_OFFWHITE_BLUE_DETAIL,
+];
+
+export const NIKE_OFFWHITE_PRIMARY = 'https://l.top4top.io/p_3918uxrad1.jpg';      // Photo 3
+export const NIKE_OFFWHITE_DETAIL = 'https://c.top4top.io/p_3918iifdx1.jpg';       // Photo 8
+export const NIKE_OFFWHITE_IMAGES: string[] = [
+  NIKE_OFFWHITE_PRIMARY,
+  NIKE_OFFWHITE_DETAIL,
+];
+
+export const NIKE_BLACK_PRIMARY = 'https://a.top4top.io/p_39183rzey1.jpg';         // Photo 4
+export const NIKE_BLACK_DETAIL = 'https://a.top4top.io/p_3918u07cm1.jpg';          // Photo 5
+export const NIKE_BLACK_IMAGES: string[] = [
+  NIKE_BLACK_PRIMARY,
+  NIKE_BLACK_DETAIL,
+];
+
+export const NIKE_GREY_PRIMARY = 'https://j.top4top.io/p_3918buyyp1.jpg';          // Photo 1
+export const NIKE_GREY_DETAIL = 'https://b.top4top.io/p_39184revq1.jpg';           // Photo 7
+export const NIKE_GREY_IMAGES: string[] = [
+  NIKE_GREY_PRIMARY,
+  NIKE_GREY_DETAIL,
+];
+
+export const NIKE_ALL_IMAGES: string[] = [
+  ...NIKE_OFFWHITE_BLUE_IMAGES,
+  ...NIKE_OFFWHITE_IMAGES,
+  ...NIKE_BLACK_IMAGES,
+  ...NIKE_GREY_IMAGES,
 ];
 
 /**
@@ -435,7 +470,31 @@ export const OFFICIAL_CATALOG_PRODUCTS: CatalogProduct[] = [
     description:
       'كوتشي Nike Sneakers مناسب للمهام اليومية والخروجات. يتميز بنعل P.V.C فوم بيور خفيف ومرن، وفوندي من جلد مستورد درجة أولى مزود ببطانة ورباط محكم للقدم، مع فرش طبي مريح للقدم.',
     price: 649,
-    image: nikeSneakersImg,
+    image: NIKE_OFFWHITE_BLUE_PRIMARY,
+    gallery: NIKE_ALL_IMAGES,
+    colorGalleries: {
+      'أوف وايت بتطعيم لبني': NIKE_OFFWHITE_BLUE_IMAGES,
+      'أوف وايت': NIKE_OFFWHITE_IMAGES,
+      'الأسود': NIKE_BLACK_IMAGES,
+      'الرمادي': NIKE_GREY_IMAGES,
+      // Arabic & English Aliases
+      'لبني': NIKE_OFFWHITE_BLUE_IMAGES,
+      'أوف وايت لبني': NIKE_OFFWHITE_BLUE_IMAGES,
+      'Off-White Blue': NIKE_OFFWHITE_BLUE_IMAGES,
+      'off-white blue': NIKE_OFFWHITE_BLUE_IMAGES,
+      'Off-White': NIKE_OFFWHITE_IMAGES,
+      'off-white': NIKE_OFFWHITE_IMAGES,
+      'Off White': NIKE_OFFWHITE_IMAGES,
+      'off white': NIKE_OFFWHITE_IMAGES,
+      'أسود': NIKE_BLACK_IMAGES,
+      'Black': NIKE_BLACK_IMAGES,
+      'black': NIKE_BLACK_IMAGES,
+      'رمادي': NIKE_GREY_IMAGES,
+      'Grey': NIKE_GREY_IMAGES,
+      'grey': NIKE_GREY_IMAGES,
+      'Gray': NIKE_GREY_IMAGES,
+      'gray': NIKE_GREY_IMAGES,
+    },
     cardShortCopy: 'سنيكرز خفيف ومريح، مناسب للمهام اليومية والخروجات.',
     cardFitDetail: 'جلد مستورد درجة أولى • تلبيس مظبوط',
   },
